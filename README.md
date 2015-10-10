@@ -32,16 +32,20 @@ Directive is designed for an input text field. The input field must have ngModel
 ### bower:
     bower install angular-dynamic-number
 then reference:
+
     bower_components/angular-dynamic-number/release/dynamic-number.js
 
 or
+
     bower_components/angular-dynamic-number/release/dynamic-number.min.js
 ### manualy
 Clone repository ```https://github.com/uhlryk/angular-dynamic-number.git``` and use in your code ```release/dynamic-number.js```
 ## Quick start: How to use it
 Add the js file to your html:
+
     <script src="myPath/angular-dynamic-number/release/dynamic-number.min.js"></script>
 Or if you use browserify and install by npm:
+
     require('angular-dynamic-number');
 Add the module to your dependencies:
 
@@ -53,6 +57,7 @@ Add the ```awnum``` attribute to input fields:
 
 ## Options
 Options are also input field attributes
+
 **num-int**:
 
 Set maximum numbers of digits integer part (digits before decimal separator) (default 6).
@@ -75,6 +80,7 @@ If true then number can be negative (default 'true').
 
 ## Example:
 Negative number with max value 9999.99 and comma as separator
+
     <input type="string" ng-model="value4" class="form-control" awnum num-sep="," num-int=4 num-fract=2 num-pos=false>
 
 ## License
