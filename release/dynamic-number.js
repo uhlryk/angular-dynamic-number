@@ -15,7 +15,7 @@ function convViewToModel(viewValue, viewSeparator) {
   }
 }
 function initIntegerPart(attrs_num_int, def_num_int){
-  if(attrs_num_int){
+  if(attrs_num_int >= 0){
     var _num_int = parseInt(attrs_num_int,10);
     if(isNaN(_num_int) === false && isFinite(_num_int) && _num_int >= 0){
       return _num_int;
@@ -24,7 +24,7 @@ function initIntegerPart(attrs_num_int, def_num_int){
   return def_num_int;
 }
 function initFractionPart(attrs_num_fract, def_num_fract){
-  if(attrs_num_fract){
+  if(attrs_num_fract >= 0){
     var _num_fract = parseInt(attrs_num_fract,10);
     if(isNaN(_num_fract) === false && isFinite(_num_fract) && _num_fract >= 0){
       return _num_fract;
@@ -56,6 +56,16 @@ function initIsNegative(attrs_num_neg, def_num_neg){
   }
   return def_num_neg;
 }
+function initRound(attrs_round, def_round){
+  if(attrs_round === 'floor') {
+    return Math.floor;
+  } else if(attrs_round === 'ceil') {
+    return Math.ceil;
+  } else if(attrs_round === 'round') {
+    return Math.round;
+  }
+  return def_round;
+}
 function buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber){
   var negativeRegex = '-?';
   if(isPositiveNumber === false && isNegativeNumber === true) {
@@ -80,6 +90,14 @@ function changeViewValue(ngModelController, value){
   ngModelController.$viewValue = value;
   ngModelController.$render();
 }
+function filterModelValue(value, fractionPart, fractionSeparator, roundFunction){
+  value = Number(value);
+  if(!isNaN(value) && isFinite(value)) {
+    var powerOfTen = Math.pow(10, fractionPart);
+    return  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator);
+  }
+  return "0";
+}
 function dynamicNumberDirective() {
   return {
     restrict:'A',
@@ -89,7 +107,8 @@ function dynamicNumberDirective() {
       numFract: "@",
       numSep: "@",
       numPos: "@",
-      numNeg: "@"
+      numNeg: "@",
+      numRound: "@"
     },
     link: function(scope, element, attrs, ngModelController) {
       var integerPart = initIntegerPart(scope.numInt, 6);
@@ -97,6 +116,7 @@ function dynamicNumberDirective() {
       var fractionSeparator = initSeparator(scope.numSep, '.');
       var isPositiveNumber = initIsPositive(scope.numPos, true);
       var isNegativeNumber = initIsNegative(scope.numNeg, true);
+      var roundFunction = initRound(scope.numRound, Math.round);
       if(isPositiveNumber === false && isNegativeNumber === false) {
         throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
       }
@@ -133,12 +153,23 @@ function dynamicNumberDirective() {
         }
       });
       /**
-       * it assume that model has correct format of price (with dot)
+       * it is like filter,
        */
-      ngModelController.$formatters.push(function(data){
-        return convModelToView(data, fractionSeparator);
+      ngModelController.$formatters.push(function(value){
+        return filterModelValue(value, fractionPart, fractionSeparator, roundFunction);
       });
     }
   };
 }
-angular.module('dynamicNumber',[]).directive('awnum', dynamicNumberDirective);
+/**
+ * filter does not validate data only filter fraction part and decimal separator
+ */
+function dynamicNumberFilter(){
+  return function(value, numFract, numSep, numRound) {
+    var fractionPart = initFractionPart(numFract, 2);
+    var fractionSeparator = initSeparator(numSep, '.');
+    var roundFunction = initRound(numRound, Math.round);
+    return filterModelValue(value, fractionPart, fractionSeparator, roundFunction);
+  };
+}
+angular.module('dynamicNumber',[]).directive('awnum', dynamicNumberDirective).filter('awnum', dynamicNumberFilter);

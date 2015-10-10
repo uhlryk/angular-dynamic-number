@@ -14,34 +14,39 @@
     <div class="container-fluid content">
       <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="row">
-          <h1>Example of angular dynamic number</h1>
-          <form class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';">
+          <h1>Example of angular dynamic number directive</h1>
+          <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';">
             <div class="form-group">
               <label for="invoice_number" class="control-label">Number may be positive or negative, decimal separator comma</label>
-              <input type="string" ng-model="value1" class="form-control" awnum num-sep="," num-int=4 num-fract=2 placeholder="e.g. XXXX,XX">
+              <input type="text" ng-model="value1" class="form-control" awnum num-sep="," num-int=4 num-fract=2 placeholder="e.g. XXXX,XX">
               <div>How looks model: {{value1}}</div>
             </div>
             <div class="form-group">
               <label for="invoice_number" class="control-label">Number may be positive or negative, decimal separator dot</label>
-              <input type="string" ng-model="value2" class="form-control" awnum num-sep="." num-int=4 num-fract=2 placeholder="e.g. XXXX.XX">
+              <input type="text" ng-model="value2" class="form-control" awnum num-sep="." num-int=4 num-fract=2 placeholder="e.g. XXXX.XX">
               <div>How looks model: {{value2}}</div>
             </div>
             <div class="form-group">
               <label for="invoice_number" class="control-label">Number may be positive or negative, only real numbers</label>
-              <input type="string" ng-model="value3" class="form-control" awnum num-int=3 num-fract=0 placeholder="e.g. XXX">
+              <input type="text" ng-model="value3" class="form-control" awnum num-int=3 num-fract=0 placeholder="e.g. XXX">
               <div>How looks model: {{value3}}</div>
             </div>
             <div class="form-group">
               <label for="invoice_number" class="control-label">Number may be only negative, decimal separator dot</label>
-              <input type="string" ng-model="value4" class="form-control" awnum num-sep="." num-int=4 num-fract=2 num-pos=false placeholder="e.g. -XXXX.XX">
+              <input type="text" ng-model="value4" class="form-control" awnum num-sep="." num-int=4 num-fract=2 num-pos=false placeholder="e.g. -XXXX.XX">
               <div>How looks model: {{value4}}</div>
             </div>
             <div class="form-group">
               <label for="invoice_number" class="control-label">Number may be only negative, decimal separator dot integer number 0</label>
-              <input type="string" ng-model="value5" class="form-control" awnum num-sep="." num-int=0 num-fract=2 num-pos=false placeholder="e.g. -XXXX.XX">
+              <input type="text" ng-model="value5" class="form-control" awnum num-sep="." num-int=0 num-fract=2 num-pos=false placeholder="e.g. -XXXX.XX">
               <div>How looks model: {{value5}}</div>
             </div>
           </form>
+          <h1>Example of angular dynamic number filter</h1>
+          <div class="form-group" ng-init="filter1=1234.5678">
+            <div>Model value without filter:{{filter1}} </div>
+            <div>Filter: {{filter1|awnum:2:',':'round'}}</div>
+          </div>
         </div>
       </div>
     </div>
