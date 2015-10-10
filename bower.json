@@ -1,0 +1,39 @@
+{
+  "name": "angular-dynamic-number",
+  "version": "1.0.0",
+  "homepage": "https://github.com/uhlryk/angular-dynamic-number",
+  "authors": [
+    "Krzysztof Sztompka <sztompka.krzysztof@gmail.com>"
+  ],
+  "description": "Highly customizable angular directive for numbers",
+  "main": "release/dynamic-number.js",
+  "keywords": [
+    "angular",
+    "directive",
+    "number",
+    "format",
+    "comma",
+    "dot"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "src",
+    "examples",
+    ".travis.yml",
+    ".npmignore",
+    "karma.conf.js",
+    "package.json",
+    "gulpfile.js"
+  ],
+  "dependencies": {
+    "angular": "~1.4.7"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.7"
+  }
+}

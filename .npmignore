@@ -1,0 +1,12 @@
+node_modules
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+bower_components
+test
+src
+examples
+gulpfile.js
+karma.conf.js
+README.md
+.travis.yml
