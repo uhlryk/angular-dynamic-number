@@ -10,7 +10,7 @@ It works at realtime, therefore this model value may be use in computation for o
 
 It works also when you set in controller your model value (with dot) and if you set separator as comma, then in input field there will be comma.
 
-## Demo: demo
+## Demo: [demo](https://github.com/uhlryk/angular-dynamic-number/blob/master/examples/index.html)
 
 ## Features:
 - config max numbers for integer part and decimal part.
