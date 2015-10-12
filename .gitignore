@@ -3,3 +3,4 @@ node_modules
 *.sublime-workspace
 .DS_Store
 bower_components
+npm-debug.log
