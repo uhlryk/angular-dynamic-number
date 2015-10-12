@@ -66,6 +66,14 @@
     }
     return def_round;
   }
+  function initIsFixed(attrs_fixed, def_fixed){
+    if(attrs_fixed === 'false') {
+      return false;
+    } else if(attrs_fixed === 'true') {
+      return true;
+    }
+    return def_fixed;
+  }
   function buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber){
     var negativeRegex = '-?';
     if(isPositiveNumber === false && isNegativeNumber === true) {
@@ -92,13 +100,21 @@
     ngModelController.$setViewValue(value);
     ngModelController.$render();
   }
-  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction){
+  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed){
     value = Number(value);
     if(!isNaN(value) && isFinite(value)) {
       var powerOfTen = Math.pow(10, fractionPart);
-      return  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator);
+      if(numFixed) {
+        return  convModelToView((roundFunction(value*powerOfTen)/powerOfTen).toFixed(fractionPart), fractionSeparator);
+      } else {
+        return  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator);
+      }
     }
-    return "0";
+    if(numFixed) {
+      return (0).toFixed(fractionPart);
+    } else {
+      return "0";
+    }
   }
   function dynamicNumberDirective() {
     return {
@@ -167,11 +183,12 @@
    * filter does not validate data only filter fraction part and decimal separator
    */
   function dynamicNumberFilter(){
-    return function(value, numFract, numSep, numRound) {
+    return function(value, numFract, numSep, numRound, numFixed) {
       var fractionPart = initFractionPart(numFract, 2);
       var fractionSeparator = initSeparator(numSep, '.');
       var roundFunction = initRound(numRound, Math.round);
-      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction);
+      var isFixed = initIsFixed(numFixed, false);
+      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed);
     };
   }
   angular.module('dynamicNumber',[]).directive('awnum', dynamicNumberDirective).filter('awnum', dynamicNumberFilter);

@@ -142,6 +142,12 @@ describe('Angular-dynamic-number basic', function() {
       it('should return 0 when value \'abc\' ', function () {
         expect($filter('awnum')('abc')).toEqual('0');
       });
+      it('should return 11,29 when value \'11.287\' ', function () {
+        expect($filter('awnum')('11.287',2, ',','round')).toEqual('11,29');
+      });
+      it('should return 11,00 when value \'11\' and fixed fraction digit number is 2', function () {
+        expect($filter('awnum')('11.00',2, ',','round','true')).toEqual('11,00');
+      });
     });
   });
 });
