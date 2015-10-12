@@ -87,7 +87,9 @@
     return value.replace(/^0+/g, "").replace(/^-00+/g, "-0").replace(/-0+\[\.,]/, "-0$&").replace(/^[\.,]/g, "0$&");
   }
   function changeViewValue(ngModelController, value){
-    ngModelController.$viewValue = value;
+    // https://github.com/angular/angular.js/issues/13068
+    // ngModelController.$viewValue = value;
+    ngModelController.$setViewValue(value);
     ngModelController.$render();
   }
   function filterModelValue(value, fractionPart, fractionSeparator, roundFunction){
