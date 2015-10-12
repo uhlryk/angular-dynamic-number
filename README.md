@@ -100,11 +100,12 @@ Set decimal separator (dot or comma) (default '.').
 
 **numRound**
 
+Define round method for fraction part when convert from model to view and for filter
+
 **numFixed**
 
 If true then there is fixed number of fraction digets - (useful when fraction part is 00 and we need to show this zeros e.g. 12,00 )
 
-Define round method for fraction part when convert from model to view and for filter
 
 ## Example:
 Negative number with max value 9999.99 and comma as separator
