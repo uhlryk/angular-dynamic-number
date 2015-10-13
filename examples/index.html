@@ -22,6 +22,11 @@
               <div>How looks model: {{value1}}</div>
             </div>
             <div class="form-group">
+              <label for="invoice_number" class="control-label">Number may be positive or negative, decimal separator dot, tousand separator comma</label>
+              <input type="text" ng-model="value6" class="form-control" awnum num-sep="." num-int=8 num-fract=2 num-thousand='true'>
+              <div>How looks model: {{value6}}</div>
+            </div>
+            <div class="form-group">
               <label for="invoice_number" class="control-label">Number may be positive or negative, decimal separator comma, tousand separator dot</label>
               <input type="text" ng-model="value6" class="form-control" awnum num-sep="," num-int=8 num-fract=2 num-thousand='true'>
               <div>How looks model: {{value6}}</div>
