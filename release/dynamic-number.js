@@ -9,9 +9,9 @@
   }
   function convViewToModel(viewValue, viewSeparator) {
     if(viewSeparator === ',') {
-      return String(viewValue).replace(",",".");
+      return String(viewValue).replace(/\./g,"").replace(",",".");
     } else {
-      return viewValue;
+      return String(viewValue).replace(/,/g,"");
     }
   }
   function initIntegerPart(attrs_num_int, def_num_int){
@@ -74,6 +74,14 @@
     }
     return def_fixed;
   }
+  function initIsThousand(attrs_thousand, def_thousand){
+    if(attrs_thousand === 'false') {
+      return false;
+    } else if(attrs_thousand === 'true') {
+      return true;
+    }
+    return def_thousand;
+  }
   function buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber){
     var negativeRegex = '-?';
     if(isPositiveNumber === false && isNegativeNumber === true) {
@@ -94,21 +102,35 @@
   function removeLeadingZero(value){
     return String(value).replace(/^0+/g, "").replace(/^-00+/g, "-0").replace(/-0+\[\.,]/, "-0$&").replace(/^[\.,]/g, "0$&");
   }
+  function removeThousandSeparators(value, thousandSeparator){
+    if(thousandSeparator === '.') {
+      return value.replace(/\./g, "");
+    } else {
+      return value.replace(/,/g, "");
+    }
+  }
+  function addThousandSeparator(value, thousandSeparator){
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+  }
   function changeViewValue(ngModelController, value){
     // https://github.com/angular/angular.js/issues/13068
     // ngModelController.$viewValue = value;
     ngModelController.$setViewValue(value);
     ngModelController.$render();
   }
-  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed){
+  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed, isThousandSeparator){
     value = Number(value);
     if(!isNaN(value) && isFinite(value)) {
       var powerOfTen = Math.pow(10, fractionPart);
       if(numFixed) {
-        return  convModelToView((roundFunction(value*powerOfTen)/powerOfTen).toFixed(fractionPart), fractionSeparator);
+        value =  convModelToView((roundFunction(value*powerOfTen)/powerOfTen).toFixed(fractionPart), fractionSeparator);
       } else {
-        return  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator);
+        value =  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator);
       }
+      if(isThousandSeparator){
+        value = addThousandSeparator(value, fractionSeparator==='.'?',':'.');
+      }
+      return value;
     }
     if(numFixed) {
       return (0).toFixed(fractionPart);
@@ -126,7 +148,8 @@
         numSep: "@",
         numPos: "@",
         numNeg: "@",
-        numRound: "@"
+        numRound: "@",
+        numThousand: "@"
       },
       link: function(scope, element, attrs, ngModelController) {
         var integerPart = initIntegerPart(scope.numInt, 6);
@@ -135,13 +158,17 @@
         var isPositiveNumber = initIsPositive(scope.numPos, true);
         var isNegativeNumber = initIsNegative(scope.numNeg, true);
         var roundFunction = initRound(scope.numRound, Math.round);
+        var isThousandSeparator = initIsThousand(scope.numThousand, false);
+
         if(isPositiveNumber === false && isNegativeNumber === false) {
           throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
         }
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
           var parsedValue = value;
+          parsedValue = removeThousandSeparators(parsedValue, fractionSeparator==='.'?',':'.');
           parsedValue = removeLeadingZero(parsedValue);
+
           if(parsedValue === '' && String(value).charAt(0)=== '0'){
             changeViewValue(ngModelController, 0);
             return 0;
@@ -158,7 +185,11 @@
            * therefore view value is set from last correct model value (it must be formatted - change dot to comma)
            */
           if(viewRegexTest.test(parsedValue) === false){
-            changeViewValue(ngModelController, convModelToView(ngModelController.$modelValue, fractionSeparator));
+            var modelValue = convModelToView(ngModelController.$modelValue, fractionSeparator);
+            if(isThousandSeparator){
+              modelValue = addThousandSeparator(modelValue, fractionSeparator==='.'?',':'.');
+            }
+            changeViewValue(ngModelController, modelValue);
             return ngModelController.$modelValue;
           }
           /**
@@ -166,6 +197,9 @@
            * therefore model value is set from correct view value (it must be formatter - change comma to dot)
            */
           else {
+            if(isThousandSeparator){
+              parsedValue = addThousandSeparator(parsedValue, fractionSeparator==='.'?',':'.');
+            }
             changeViewValue(ngModelController, parsedValue);
             return convViewToModel(parsedValue, fractionSeparator);
           }
@@ -174,7 +208,7 @@
          * it is like filter,
          */
         ngModelController.$formatters.push(function(value){
-          return filterModelValue(value, fractionPart, fractionSeparator, roundFunction);
+          return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, false, isThousandSeparator);
         });
       }
     };
@@ -183,12 +217,13 @@
    * filter does not validate data only filter fraction part and decimal separator
    */
   function dynamicNumberFilter(){
-    return function(value, numFract, numSep, numRound, numFixed) {
+    return function(value, numFract, numSep, numRound, numFixed, numThousand) {
       var fractionPart = initFractionPart(numFract, 2);
       var fractionSeparator = initSeparator(numSep, '.');
       var roundFunction = initRound(numRound, Math.round);
       var isFixed = initIsFixed(numFixed, false);
-      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed);
+      var isThousandSeparator = initIsThousand(numThousand, false);
+      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator);
     };
   }
   angular.module('dynamicNumber',[]).directive('awnum', dynamicNumberDirective).filter('awnum', dynamicNumberFilter);

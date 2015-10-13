@@ -21,7 +21,9 @@ Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separa
 - config decimal separator (dot or comma)
 - config to accept positive, negative and both numbers.
 - model value is correct javascript number, but view value may be correct number for localities
+- dynamic thousand separator (if decimal separator is comma then thousand separator is dot)
 - filter with comma/dot separator and congurable number of fraction digits
+- filter with thousand separator
 Edit contractors create new entry for contractor (old entries are for archive or for generate old invoices with old contractor data)
 Delete contractors set entries as archive.
 Add, list, show invoices
@@ -86,9 +88,13 @@ If true then number can be negative (default 'true').
 
 Define round method for fraction part when convert from model to view and for filter
 
+**num-thousand**:
+
+If true then number has thousand separator.
+
 ## Filter options
 
-    {{ expression | awnum:numFrac:numSep:numRound:numFixed}}
+    {{ expression | awnum:numFrac:numSep:numRound:numFixed:numThousand}}
 
 **numFrac**
 
@@ -106,6 +112,9 @@ Define round method for fraction part when convert from model to view and for fi
 
 If true then there is fixed number of fraction digets - (useful when fraction part is 00 and we need to show this zeros e.g. 12,00 )
 
+**numThousand**
+
+If true then number has thousand separator.
 
 ## Example:
 Negative number with max value 9999.99 and comma as separator
