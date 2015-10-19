@@ -4,7 +4,7 @@
     if(viewSeparator === ',') {
       return String(modelValue).replace(".",",");
     } else {
-      return modelValue;
+      return String(modelValue);
     }
   }
   function convViewToModel(viewValue, viewSeparator) {
@@ -104,13 +104,13 @@
   }
   function removeThousandSeparators(value, thousandSeparator){
     if(thousandSeparator === '.') {
-      return value.replace(/\./g, "");
+      return String(value).replace(/\./g, "");
     } else {
-      return value.replace(/,/g, "");
+      return String(value).replace(/,/g, "");
     }
   }
   function addThousandSeparator(value, thousandSeparator){
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
   }
   function changeViewValue(ngModelController, value){
     // https://github.com/angular/angular.js/issues/13068
