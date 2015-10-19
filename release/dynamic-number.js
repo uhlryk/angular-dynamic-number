@@ -138,6 +138,54 @@
       return "0";
     }
   }
+  /**
+   * from this source:
+   * http://stackoverflow.com/a/2897229/4138339
+   */
+  function doGetCaretPosition (oField) {
+    var iCaretPos = 0;
+    if (document.selection) {
+      oField.focus ();
+      var oSel = document.selection.createRange ();
+      oSel.moveStart ('character', -oField.value.length);
+      iCaretPos = oSel.text.length;
+    }
+    else if (oField.selectionStart || oField.selectionStart == '0')
+      iCaretPos = oField.selectionStart;
+    return (iCaretPos);
+  }
+  /**
+   * from this source
+   * http://stackoverflow.com/a/22574572/4138339
+   */
+  function setCaretPosition(elem, caretPos) {
+    if (elem !== null) {
+      if (elem.createTextRange) {
+        var range = elem.createTextRange();
+        range.move('character', caretPos);
+        range.select();
+      } else {
+        if (elem.selectionStart) {
+          elem.focus();
+          elem.setSelectionRange(caretPos, caretPos);
+        } else
+        elem.focus();
+      }
+    }
+  }
+  function countThousandSeparatorToPosition(value,separator, position){
+    var countPosition = 0;
+    var countDots = 0;
+    for(var i =0; i < value.length;i++){
+      if(value[i] !== separator){
+        countPosition ++;
+        if(countPosition >= position)break;
+      } else {
+        countDots ++;
+      }
+    }
+    return countDots;
+  }
   function dynamicNumberDirective() {
     return {
       restrict:'A',
@@ -166,7 +214,13 @@
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
           var parsedValue = value;
+          var cursorPosition = doGetCaretPosition(element[0]);
+          var valBeforeCursor = parsedValue.slice(0,cursorPosition);
+          var valLengthBeforeCursor = valBeforeCursor.length;
+
+          valBeforeCursor = removeThousandSeparators(valBeforeCursor, fractionSeparator==='.'?',':'.');
           parsedValue = removeThousandSeparators(parsedValue, fractionSeparator==='.'?',':'.');
+          valBeforeCursor = removeLeadingZero(valBeforeCursor);
           parsedValue = removeLeadingZero(parsedValue);
 
           if(parsedValue === '' && String(value).charAt(0)=== '0'){
@@ -177,7 +231,7 @@
             return 0;
           }
           if(parsedValue === '-'){
-            changeViewValue(ngModelController, parsedValue);
+            changeViewValue(ngModelController, '-');
             return 0;
           }
           /**
@@ -190,6 +244,7 @@
               modelValue = addThousandSeparator(modelValue, fractionSeparator==='.'?',':'.');
             }
             changeViewValue(ngModelController, modelValue);
+            setCaretPosition(element[0],cursorPosition-1);
             return ngModelController.$modelValue;
           }
           /**
@@ -197,10 +252,14 @@
            * therefore model value is set from correct view value (it must be formatter - change comma to dot)
            */
           else {
+            var dots = 0;
+            var currentPosition = cursorPosition - valLengthBeforeCursor + valBeforeCursor.length;
             if(isThousandSeparator){
               parsedValue = addThousandSeparator(parsedValue, fractionSeparator==='.'?',':'.');
+              dots = countThousandSeparatorToPosition(parsedValue,fractionSeparator==='.'?',':'.',currentPosition);
             }
             changeViewValue(ngModelController, parsedValue);
+            setCaretPosition(element[0],currentPosition + dots);
             return convViewToModel(parsedValue, fractionSeparator);
           }
         });

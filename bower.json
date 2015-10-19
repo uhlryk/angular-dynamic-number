@@ -13,7 +13,10 @@
     "number",
     "format",
     "comma",
-    "dot"
+    "dot",
+    "number separator",
+    "thousand separator",
+    "decimal separator"
   ],
   "license": "MIT",
   "ignore": [

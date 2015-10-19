@@ -24,6 +24,7 @@ Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separa
 - dynamic thousand separator (if decimal separator is comma then thousand separator is dot)
 - filter with comma/dot separator and congurable number of fraction digits
 - filter with thousand separator
+- keeps cursor position
 Edit contractors create new entry for contractor (old entries are for archive or for generate old invoices with old contractor data)
 Delete contractors set entries as archive.
 Add, list, show invoices

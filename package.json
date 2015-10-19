@@ -8,7 +8,10 @@
     "number",
     "format",
     "comma",
-    "dot"
+    "dot",
+    "number separator",
+    "thousand separator",
+    "decimal separator"
   ],
   "main": "release/dynamic-number.js",
   "homepage": "https://github.com/uhlryk/angular-dynamic-number",
