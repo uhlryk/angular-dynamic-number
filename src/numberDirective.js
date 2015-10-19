@@ -142,7 +142,7 @@
    * from this source:
    * http://stackoverflow.com/a/2897229/4138339
    */
-  function doGetCaretPosition (oField) {
+  function getCaretPosition (oField) {
     var iCaretPos = 0;
     if (document.selection) {
       oField.focus ();
@@ -213,8 +213,8 @@
         }
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
-          var parsedValue = value;
-          var cursorPosition = doGetCaretPosition(element[0]);
+          var parsedValue = String(value);
+          var cursorPosition = getCaretPosition(element[0]);
           var valBeforeCursor = parsedValue.slice(0,cursorPosition);
           var valLengthBeforeCursor = valBeforeCursor.length;
 
