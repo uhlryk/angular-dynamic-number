@@ -25,10 +25,6 @@ Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separa
 - filter with comma/dot separator and congurable number of fraction digits
 - filter with thousand separator
 - keeps cursor position
-Edit contractors create new entry for contractor (old entries are for archive or for generate old invoices with old contractor data)
-Delete contractors set entries as archive.
-Add, list, show invoices
-Generate pdf of invoice
 
 ## Limitations:
 Directive is designed for an input text field. The input field must have ngModel.
@@ -120,7 +116,7 @@ If true then number has thousand separator.
 ## Example:
 Negative number with max value 9999.99 and comma as separator
 
-    <input type='text' ng-model='value4' awnum num-sep=','' num-int=4 num-fract=2 num-pos=false>
+    <input type='text' ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false>
 
 Filter for number with max 3 fraction number and comma separator
 
