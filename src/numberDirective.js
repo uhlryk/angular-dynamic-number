@@ -186,11 +186,12 @@
     }
     return countDots;
   }
-  function dynamicNumberDirective() {
+  function dynamicNumberDirective(dynamicNumberStrategy) {
     return {
       restrict:'A',
       require: '?ngModel',
       scope: {
+        awnum: "@",
         numInt: "@",
         numFract: "@",
         numSep: "@",
@@ -285,5 +286,32 @@
       return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator);
     };
   }
-  angular.module('dynamicNumber',[]).directive('awnum', dynamicNumberDirective).filter('awnum', dynamicNumberFilter);
+  angular.module('dynamicNumber',[])
+  .provider('dynamicNumberStrategy', function() {
+    var strategies = {};
+    this.addStrategy = function(name, strategy){
+      strategies[name]=strategy;
+    };
+    this.getStrategy = function(name) {
+      return strategies[name];
+    };
+    this.$get = function(){
+      return {
+        getStrategy: function(name) {
+          return strategies[name];
+        }
+      };
+    };
+  })
+  .filter('awnum', function() {
+    return function(value, numFract, numSep, numRound, numFixed, numThousand) {
+      var fractionPart = initFractionPart(numFract, 2);
+      var fractionSeparator = initSeparator(numSep, '.');
+      var roundFunction = initRound(numRound, Math.round);
+      var isFixed = initIsFixed(numFixed, false);
+      var isThousandSeparator = initIsThousand(numThousand, false);
+      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator);
+    };
+  })
+  .directive('awnum', ['dynamicNumberStrategy',dynamicNumberDirective]);
 })(window,window.angular);

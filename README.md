@@ -25,6 +25,7 @@ Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separa
 - filter with comma/dot separator and congurable number of fraction digits
 - filter with thousand separator
 - keeps cursor position
+- custom strategies
 
 ## Limitations:
 Directive is designed for an input text field. The input field must have ngModel.
@@ -88,6 +89,41 @@ Define round method for fraction part when convert from model to view and for fi
 **num-thousand**:
 
 If true then number has thousand separator.
+
+## Custom strategies
+
+There are multiple options for configuration each input. If you don't like write each time same options, there is for you custom strategies.
+You can in config file create multiple sets of configs, and use them in input file
+
+To create custom strategy in config use ```dynamicNumberStrategyProvider```. It has methods:
+
+    addStrategy(strategyName, {
+        numInt: number,
+        numFract: number,
+        numSep: char [\.|,],
+        numPos: boolean [true|false],
+        numNeg: boolean [true|false],
+        numRound: string ['round' | 'ceil' | 'floor'],
+        numThousand: boolean [true|false]
+    })
+
+for example, create price strategy:
+
+    app.config(['dynamicNumberStrategyProvider', function(dynamicNumberStrategyProvider){
+      dynamicNumberStrategyProvider.addStrategy('price', {
+        numInt: 6,
+        numFract: 2,
+        numSep: '.',
+        numPos: true,
+        numNeg: true,
+        numRound: 'round',
+        numThousand: true
+      });
+    }]);
+
+and use it in input:
+
+    <input type="text" ng-model="somemodel" awnum="price">
 
 ## Filter options
 

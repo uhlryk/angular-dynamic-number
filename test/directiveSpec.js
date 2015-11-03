@@ -3,7 +3,12 @@ describe('Angular-dynamic-number basic', function() {
     module('dynamicNumber');
   });
   describe('directive', function(){
-    var $compile, $$scope;
+    var $compile, $scope, dynamicNumberStrategyProvider;
+    beforeEach(function(){
+      module(function(_dynamicNumberStrategyProvider_){
+        dynamicNumberStrategyProvider = _dynamicNumberStrategyProvider_;
+      });
+    });
     beforeEach(function () {
       inject(function(_$compile_, _$rootScope_){
         $compile = _$compile_;
@@ -157,6 +162,46 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should not have view value 11.11 and model value 11.11 when set 11.11', function () {
         $scope.testForm.testInput.$setViewValue('11.11');
+        expect($scope.testInput).not.toEqual('11.11');
+        expect($scope.testForm.testInput.$viewValue).not.toEqual('11.11');
+      });
+    });
+    describe('custom strategy provider', function(){
+      beforeEach(function(){
+        dynamicNumberStrategyProvider.addStrategy('price', {
+          numInt: 6,
+          numFract: 2,
+          numSep: '.',
+          numPos: true,
+          numNeg: true,
+          numRound: 'round',
+          numThousand: true
+        });
+        var el = $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum="price"/></form>')($scope);
+        $scope.$digest();
+      });
+      it('should have view value 11.11 and model value 11.11 when set 11.11', function () {
+        $scope.testForm.testInput.$setViewValue('11.11');
+        expect($scope.testInput).toEqual('11.11');
+        expect($scope.testForm.testInput.$viewValue).toEqual('11.11');
+      });
+      it('should have view value 0.11 and model value 0.11 when set 0.11', function () {
+        $scope.testForm.testInput.$setViewValue('0.11');
+        expect($scope.testInput).toEqual('0.11');
+        expect($scope.testForm.testInput.$viewValue).toEqual('0.11');
+      });
+      it('should have view value -11.11 and model value -11.11 when set -11.11', function () {
+        $scope.testForm.testInput.$setViewValue('-11.11');
+        expect($scope.testInput).toEqual('-11.11');
+        expect($scope.testForm.testInput.$viewValue).toEqual('-11.11');
+      });
+      it('should have view value -0.11 and model value -0.11 when set -0.11', function () {
+        $scope.testForm.testInput.$setViewValue('-0.11');
+        expect($scope.testInput).toEqual('-0.11');
+        expect($scope.testForm.testInput.$viewValue).toEqual('-0.11');
+      });
+      it('should not have view value 11.11 and model value 11.11 when set 11,11', function () {
+        $scope.testForm.testInput.$setViewValue('11,11');
         expect($scope.testInput).not.toEqual('11.11');
         expect($scope.testForm.testInput.$viewValue).not.toEqual('11.11');
       });
