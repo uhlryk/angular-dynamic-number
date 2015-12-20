@@ -28,7 +28,7 @@ Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separa
 - custom strategies
 
 ## Limitations:
-Directive is designed for an input text field. The input field must have ngModel.
+Directive is designed for an input text field ( **type="text"** ). The input field must have ngModel.
 
 ## Installation:
 ### npm

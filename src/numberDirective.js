@@ -201,6 +201,14 @@
         numThousand: "@"
       },
       link: function(scope, element, attrs, ngModelController) {
+        if(!element[0] || element[0].tagName !== 'INPUT' || element[0].type !== 'text') {
+          console.warn ('Directive angular-dynamic-number works only for \'input\' tag with type = \'text\'');
+          return;
+        }
+        if(!ngModelController) {
+          console.warn ('Directive angular-dynamic-number need ngModel attribute');
+          return;
+        }
         var integerPart = initIntegerPart(scope.numInt, 6);
         var fractionPart = initFractionPart(scope.numFract, 2);
         var fractionSeparator = initSeparator(scope.numSep, '.');
