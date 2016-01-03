@@ -100,7 +100,12 @@
     return new RegExp('^'+negativeRegex+intRegex+fractRegex+'?$');
   }
   function removeLeadingZero(value){
-    return String(value).replace(/^0+/g, "").replace(/^-00+/g, "-0").replace(/-0+\[\.,]/, "-0$&").replace(/^[\.,]/g, "0$&");
+    // return String(value).replace(/^0+/g, "").replace(/^-00+/g, "-0").replace(/-0+\[\.,]/, "-0$&").replace(/^[\.,]/g, "0$&");
+    return String(value)
+      .replace(/^0+/g, "")//change 00000 to ''
+      .replace(/^-0(\d+)/g, "-$1")//change -013212 to -0
+      .replace(/^-([\.,])/, "-0$1")//change -. to -0.
+      .replace(/^[\.,]/g, "0$&");//change . to 0.
   }
   function removeThousandSeparators(value, thousandSeparator){
     if(thousandSeparator === '.') {
