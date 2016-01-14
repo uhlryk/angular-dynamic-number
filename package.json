@@ -25,7 +25,8 @@
     "url": "https://github.com/uhlryk/angular-dynamic-number/issues"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "build": "gulp script"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
