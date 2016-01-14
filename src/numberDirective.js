@@ -1,6 +1,9 @@
 /*jslint node: true */
 (function(window, angular, undefined) {"use strict";
   function convModelToView(modelValue, viewSeparator){
+    if(modelValue === undefined) {
+      return '';
+    }
     if(viewSeparator === ',') {
       return String(modelValue).replace(".",",");
     } else {
@@ -104,7 +107,7 @@
     return String(value)
       .replace(/^0+/g, "")//change 00000 to ''
       .replace(/^-0(\d+)/g, "-$1")//change -013212 to -0
-      .replace(/^-([\.,])/, "-0$1")//change -. to -0.
+      .replace(/^-([\.,])/g, "-0$1")//change -. to -0.
       .replace(/^[\.,]/g, "0$&");//change . to 0.
   }
   function removeThousandSeparators(value, thousandSeparator){
@@ -228,6 +231,10 @@
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
           var parsedValue = String(value);
+          if(/^[\.,]{2,}/.test(parsedValue)) {
+            changeViewValue(ngModelController, 0);
+            return 0;
+          }
           var cursorPosition = getCaretPosition(element[0]);
           var valBeforeCursor = parsedValue.slice(0,cursorPosition);
           var valLengthBeforeCursor = valBeforeCursor.length;
