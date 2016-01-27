@@ -1,4 +1,7 @@
-# Angular Dynamic Number [![Build Status](https://travis-ci.org/uhlryk/angular-dynamic-number.svg)](https://travis-ci.org/uhlryk/angular-dynamic-number)
+# Angular Dynamic Number
+[![Build Status](https://travis-ci.org/uhlryk/angular-dynamic-number.svg)](https://travis-ci.org/uhlryk/angular-dynamic-number)
+[![Downloads](https://img.shields.io/npm/dt/angular-dynamic-number.svg)](https://www.npmjs.com/package/angular-dynamic-number)
+[![Downloads](https://img.shields.io/npm/dm/angular-dynamic-number.svg)](https://www.npmjs.com/package/angular-dynamic-number)
 
 Highly customizable AngularJS directive for numbers.
 It validates inputs in realtime (if user press not acceptable character
