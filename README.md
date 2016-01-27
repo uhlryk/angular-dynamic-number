@@ -13,6 +13,8 @@ It works also when you set in controller your model value (with dot) and if you 
 There is also filter for one directional binding (ngBind). It round fraction part to fixed number of digits. Round method can be select from
 Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separator.
 
+It is also React version available [React Dynamic Number](https://github.com/uhlryk/react-dynamic-number)
+
 ## Demo:
 [link](http://htmlpreview.github.io/?https://github.com/uhlryk/angular-dynamic-number/blob/master/examples/index.html)
 
