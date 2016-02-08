@@ -44,17 +44,17 @@
     return def_num_sep;
   }
   function initIsPositive(attrs_num_pos, def_num_pos){
-    if(attrs_num_pos === 'false') {
+    if(attrs_num_pos === 'false' || attrs_num_pos === false) {
       return false;
-    } else if(attrs_num_pos === 'true') {
+    } else if(attrs_num_pos === 'true' || attrs_num_pos === true) {
       return true;
     }
     return def_num_pos;
   }
   function initIsNegative(attrs_num_neg, def_num_neg){
-    if(attrs_num_neg === 'false') {
+    if(attrs_num_neg === 'false' || attrs_num_neg === false) {
       return false;
-    } else if(attrs_num_neg === 'true') {
+    } else if(attrs_num_neg === 'true' || attrs_num_neg === true) {
       return true;
     }
     return def_num_neg;
@@ -70,9 +70,9 @@
     return def_round;
   }
   function initIsFixed(attrs_fixed, def_fixed){
-    if(attrs_fixed === 'false') {
+    if(attrs_fixed === 'false' || attrs_fixed === false) {
       return false;
-    } else if(attrs_fixed === 'true') {
+    } else if(attrs_fixed === 'true' || attrs_fixed === true) {
       return true;
     }
     return def_fixed;
@@ -217,13 +217,18 @@
           console.warn ('Directive angular-dynamic-number need ngModel attribute');
           return;
         }
-        var integerPart = initIntegerPart(scope.numInt, 6);
-        var fractionPart = initFractionPart(scope.numFract, 2);
-        var fractionSeparator = initSeparator(scope.numSep, '.');
-        var isPositiveNumber = initIsPositive(scope.numPos, true);
-        var isNegativeNumber = initIsNegative(scope.numNeg, true);
-        var roundFunction = initRound(scope.numRound, Math.round);
-        var isThousandSeparator = initIsThousand(scope.numThousand, false);
+
+        var strategy = {};
+        if(scope.awnum) {
+          strategy = dynamicNumberStrategy.getStrategy(scope.awnum);
+        }
+        var integerPart = initIntegerPart(scope.numInt !== undefined ? scope.numInt : strategy.numInt, 6);
+        var fractionPart = initFractionPart(scope.numFract !== undefined ? scope.numFract : strategy.numFract, 2);
+        var fractionSeparator = initSeparator(scope.numSep !== undefined ?  scope.numSep : strategy.numSep, '.');
+        var isPositiveNumber = initIsPositive(scope.numPos !== undefined ?  scope.numPos : strategy.numPos, true);
+        var isNegativeNumber = initIsNegative(scope.numNeg !== undefined ? scope.numNeg : strategy.numNeg, true);
+        var roundFunction = initRound(scope.numRound !== undefined ? scope.numRound : strategy.numRound, Math.round);
+        var isThousandSeparator = initIsThousand(scope.numThousand !== undefined ? scope.numThousand : strategy.numThousand, false);
 
         if(isPositiveNumber === false && isNegativeNumber === false) {
           throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');

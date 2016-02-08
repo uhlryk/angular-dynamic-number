@@ -11,10 +11,10 @@
         .config(['dynamicNumberStrategyProvider', function(dynamicNumberStrategyProvider){
           dynamicNumberStrategyProvider.addStrategy('price', {
             numInt: 6,
-            numFract: 2,
-            numSep: '.',
+            numFract: 4,
+            numSep: ',',
             numPos: true,
-            numNeg: true,
+            numNeg: false,
             numRound: 'round',
             numThousand: true
           });
