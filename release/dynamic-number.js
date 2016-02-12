@@ -136,7 +136,9 @@
     }
   }
   function addThousandSeparator(value, thousandSeparator){
-    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+    value = String(value).split('.');
+    value[0] = value[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+    return value.join('.');
   }
   function changeViewValue(ngModelController, value){
     // https://github.com/angular/angular.js/issues/13068
@@ -255,7 +257,6 @@
         }
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
-          console.log('x'+value+'x');
           var parsedValue = String(value);
           if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
             changeViewValue(ngModelController, 0);

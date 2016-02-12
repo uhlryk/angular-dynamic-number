@@ -136,7 +136,9 @@
     }
   }
   function addThousandSeparator(value, thousandSeparator){
-    return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+    value = String(value).split('.');
+    value[0] = value[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+    return value.join('.');
   }
   function changeViewValue(ngModelController, value){
     // https://github.com/angular/angular.js/issues/13068
