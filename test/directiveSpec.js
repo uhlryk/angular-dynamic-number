@@ -168,7 +168,7 @@ describe('Angular-dynamic-number basic', function() {
     });
     describe('number format: 6 integeres, decimals dot separator, positive and negative, space thousand separator', function() {
       beforeEach(function(){
-        var el = $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum num-int="8" num-sep="." num-fract="2" num-thousand="true"  num-thousand-char="{{\' \'}}"/></form>')($scope);
+        var el = $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum num-int="8" num-sep="." num-fract="2" num-thousand="true"  num-thousand-sep="{{\' \'}}"/></form>')($scope);
         $scope.$digest();
       });
       it('should have view value 111 111.11 and model value 111111.11 when set 111 111.11', function () {

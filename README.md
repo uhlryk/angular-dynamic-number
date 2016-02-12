@@ -28,7 +28,8 @@ It is also React version available [React Dynamic Number](https://github.com/uhl
 - config decimal separator (dot or comma)
 - config to accept positive, negative and both numbers.
 - model value is correct javascript number, but view value may be correct number for localities
-- dynamic thousand separator (if decimal separator is comma then thousand separator is dot)
+- dynamic thousand separator (by default if decimal separator is comma then thousand separator is dot)
+- thousand separarator: space, dot or comma
 - filter with comma/dot separator and congurable number of fraction digits
 - filter with thousand separator
 - keeps cursor position
@@ -97,6 +98,11 @@ Define round method for fraction part when convert from model to view and for fi
 
 If true then number has thousand separator.
 
+**num-thousand-sep**:
+
+Set thousand separator (dot or comma or space) (enable if num-thousand = true, by default if num-sep equal dot then thousand separator is comma).
+If you want to set separator as space remember that angular by default trim spaces. You can as value set "{{' '}}"
+
 ## Custom strategies
 
 There are multiple options for configuration each input. If you don't like write each time same options, there is for you custom strategies.
@@ -134,7 +140,7 @@ and use it in input:
 
 ## Filter options
 
-    {{ expression | awnum:numFrac:numSep:numRound:numFixed:numThousand}}
+    {{ expression | awnum:numFrac:numSep:numRound:numFixed:numThousand:numThousandSep}}
 
 **numFrac**
 
@@ -156,11 +162,19 @@ If true then there is fixed number of fraction digets - (useful when fraction pa
 
 If true then number has thousand separator.
 
+**numThousandSep**
+
+Set thousand separator (dot or comma or space).
+
 ## Example:
 Negative number with max value 9999.99 and comma as separator
 
     <input type='text' ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false>
 
+Negative or positive number with max value 9999.99 and comma as separator and thousand separator space
+
+    <input type='text' ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false num-thousand=true num-thousand-sep="{{' '}}">
+    
 Filter for number with max 3 fraction number and comma separator
 
     <div>{{somemodel|awnum:3:',':'round'}}</div>

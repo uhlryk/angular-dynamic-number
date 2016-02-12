@@ -225,7 +225,7 @@
         numNeg: "@",
         numRound: "@",
         numThousand: "@",
-        numThousandChar: "@"
+        numThousandSep: "@"
       },
       link: function(scope, element, attrs, ngModelController) {
         if(!element[0] || element[0].tagName !== 'INPUT' || element[0].type !== 'text') {
@@ -248,7 +248,7 @@
         var isNegativeNumber = initIsNegative(scope.numNeg !== undefined ? scope.numNeg : strategy.numNeg, true);
         var roundFunction = initRound(scope.numRound !== undefined ? scope.numRound : strategy.numRound, Math.round);
         var isThousandSeparator = initIsThousand(scope.numThousand !== undefined ? scope.numThousand : strategy.numThousand, false);
-        var thousandSeparator = initThousandSeparator(scope.numThousandChar, fractionSeparator, fractionSeparator==='.'?',':'.');
+        var thousandSeparator = initThousandSeparator(scope.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
 
         if(isPositiveNumber === false && isNegativeNumber === false) {
           throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
@@ -349,13 +349,13 @@
     };
   })
   .filter('awnum', function() {
-    return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandChar) {
+    return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep) {
       var fractionPart = initFractionPart(numFract, 2);
       var fractionSeparator = initSeparator(numSep, '.');
       var roundFunction = initRound(numRound, Math.round);
       var isFixed = initIsFixed(numFixed, false);
       var isThousandSeparator = initIsThousand(numThousand, false);
-      var thousandSeparator = initThousandSeparator(numThousandChar, fractionSeparator, fractionSeparator==='.'?',':'.');
+      var thousandSeparator = initThousandSeparator(numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
       return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator);
     };
   })
