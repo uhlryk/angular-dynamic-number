@@ -166,14 +166,19 @@ If true then number has thousand separator.
 
 Set thousand separator (dot or comma or space).
 
+## ngTrim and spaces
+
+This is angular input directive parameter. By default it has value true, which means that it automatically trim spaces and Angular Dynamic Number don't get spaces.
+Therefore the best result is when you set for input ng-trim=false
+
 ## Example:
 Negative number with max value 9999.99 and comma as separator
 
-    <input type='text' ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false>
+    <input type='text' ng-trim=false ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false>
 
 Negative or positive number with max value 9999.99 and comma as separator and thousand separator space
 
-    <input type='text' ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false num-thousand=true num-thousand-sep="{{' '}}">
+    <input type='text' ng-trim=false ng-model='value4' awnum num-sep=',' num-int=4 num-fract=2 num-pos=false num-thousand=true num-thousand-sep="{{' '}}">
     
 Filter for number with max 3 fraction number and comma separator
 

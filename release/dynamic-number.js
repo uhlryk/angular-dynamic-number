@@ -255,6 +255,7 @@
         }
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
+          console.log('x'+value+'x');
           var parsedValue = String(value);
           if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
             changeViewValue(ngModelController, 0);
