@@ -12,11 +12,12 @@
           dynamicNumberStrategyProvider.addStrategy('price', {
             numInt: 6,
             numFract: 4,
-            numSep: ',',
+            numSep: '.',
             numPos: true,
             numNeg: false,
             numRound: 'round',
-            numThousand: true
+            numThousand: true,
+            numThousandSep: ' '
           });
         }]);
     </script>

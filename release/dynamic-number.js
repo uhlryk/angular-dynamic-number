@@ -78,9 +78,9 @@
     return def_fixed;
   }
   function initIsThousand(attrs_thousand, def_thousand){
-    if(attrs_thousand === 'false') {
+    if(attrs_thousand === 'false' || attrs_thousand === false) {
       return false;
-    } else if(attrs_thousand === 'true') {
+    } else if(attrs_thousand === 'true' || attrs_thousand === true) {
       return true;
     }
     return def_thousand;
@@ -248,7 +248,7 @@
         var isNegativeNumber = initIsNegative(scope.numNeg !== undefined ? scope.numNeg : strategy.numNeg, true);
         var roundFunction = initRound(scope.numRound !== undefined ? scope.numRound : strategy.numRound, Math.round);
         var isThousandSeparator = initIsThousand(scope.numThousand !== undefined ? scope.numThousand : strategy.numThousand, false);
-        var thousandSeparator = initThousandSeparator(scope.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
+        var thousandSeparator = initThousandSeparator(scope.numThousandSep !== undefined ? scope.numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
 
         if(isPositiveNumber === false && isNegativeNumber === false) {
           throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
@@ -318,19 +318,7 @@
       }
     };
   }
-  /**
-   * filter does not validate data only filter fraction part and decimal separator
-   */
-  function dynamicNumberFilter(){
-    return function(value, numFract, numSep, numRound, numFixed, numThousand) {
-      var fractionPart = initFractionPart(numFract, 2);
-      var fractionSeparator = initSeparator(numSep, '.');
-      var roundFunction = initRound(numRound, Math.round);
-      var isFixed = initIsFixed(numFixed, false);
-      var isThousandSeparator = initIsThousand(numThousand, false);
-      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator);
-    };
-  }
+
   angular.module('dynamicNumber',[])
   .provider('dynamicNumberStrategy', function() {
     var strategies = {};
