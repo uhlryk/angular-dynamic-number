@@ -12,10 +12,8 @@
   }
   function convViewToModel(viewValue, viewSeparator, thousandSeparator) {
     if(viewSeparator === ',') {
-      console.log(String(viewValue).replace(/[\.\s]/g,"").replace(",","."));
       return String(viewValue).replace(/[\.\s]/g,"").replace(",",".");
     } else if(viewSeparator === '.') {
-      console.log(String(viewValue).replace(/[,\s]/g,""));
       return String(viewValue).replace(/[,\s]/g,"");
     }
   }
