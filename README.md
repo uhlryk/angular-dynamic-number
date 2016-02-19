@@ -34,6 +34,7 @@ It is also React version available [React Dynamic Number](https://github.com/uhl
 - filter with thousand separator
 - keeps cursor position
 - custom strategies
+- allow add currency (single character) 
 
 ## Limitations:
 Directive is designed for an input text field ( **type="text"** ). The input field must have ngModel.
@@ -103,6 +104,16 @@ If true then number has thousand separator.
 Set thousand separator (dot or comma or space) (enable if num-thousand = true, by default if num-sep equal dot then thousand separator is comma).
 If you want to set separator as space remember that angular by default trim spaces. You can as value set "{{' '}}"
 
+**num-prepend**
+
+Allow to set single character prepend currency e.g. $1234.12. Html could have problem with show some characters. In those situations you should set currency as html entit.
+€ = `&#x20AC;`
+
+**num-append**
+
+Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
+€ = `&#x20AC;`
+
 ## Custom strategies
 
 There are multiple options for configuration each input. If you don't like write each time same options, there is for you custom strategies.
@@ -140,7 +151,7 @@ and use it in input:
 
 ## Filter options
 
-    {{ expression | awnum:numFrac:numSep:numRound:numFixed:numThousand:numThousandSep}}
+    {{ expression | awnum:numFrac:numSep:numRound:numFixed:numThousand:numThousandSep:numPrepend:numAppend}}
 
 **numFrac**
 
@@ -165,6 +176,16 @@ If true then number has thousand separator.
 **numThousandSep**
 
 Set thousand separator (dot or comma or space).
+
+**numPrepend**
+
+Allow to set single character prepend currency e.g. $1234.12. Html could have problem with show some characters. In those situations you should set currency as html entit.
+€ = `&#x20AC;`
+
+**numAppend**
+
+Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
+€ = `&#x20AC;`
 
 ## ngTrim and spaces
 
