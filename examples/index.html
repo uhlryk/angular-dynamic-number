@@ -27,7 +27,7 @@
       <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
         <div class="row">
           <h1>Example of angular dynamic number directive</h1>
-          <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';value6 = '';value7 = '';value8='';value9='';">
+          <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';value6 = '';value7 = '';value8='';value9='';value10='';value11='';">
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator comma</label>
               <input type="text" ng-trim=false ng-model="value1" class="form-control" awnum num-sep="," num-int=4 num-fract=2 placeholder="e.g. XXXX,XX">
@@ -69,6 +69,16 @@
               <div>How looks model: {{value5}}</div>
             </div>
             <div class="form-group">
+              <label class="control-label">Number may be positive or negative, decimal separator comma, prepend with $</label>
+              <input type="text" ng-trim=false ng-model="value10" class="form-control" awnum num-sep="," num-int=4 num-fract=2 num-prepend="$" placeholder="e.g. XXXX,XX">
+              <div>How looks model: {{value10}}</div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Number may be positive or negative, decimal separator comma, append with &#x20AC;</label>
+              <input type="text" ng-trim=false ng-model="value11" class="form-control" awnum num-sep="," num-int=4 num-fract=2 num-append="{{'&#x20AC;'}}" placeholder="e.g. XXXX,XX">
+              <div>How looks model: {{value11}}</div>
+            </div>
+            <div class="form-group">
               <label class="control-label">There is in use custom strategy created for prices</label>
               <input type="text" ng-trim=false ng-model="value8" class="form-control" awnum="price" placeholder="e.g. -XXXX.XX">
               <div>How looks model: {{value8}}</div>
@@ -86,9 +96,19 @@
             <div>Filter: {{filter2|awnum:2:',':'round':'false':'true'}}</div>
           </div>
           <h3>Example of angular dynamic number filter with comma separator, thousand space separator</h3>
-          <div class="form-group" ng-init="filter2=123412344553.5678">
-            <div>Model value without filter:{{filter2}} </div>
-            <div>Filter: {{filter2|awnum:2:',':'round':'false':'true':' '}}</div>
+          <div class="form-group" ng-init="filter3=123412344553.5678">
+            <div>Model value without filter:{{filter3}} </div>
+            <div>Filter: {{filter3|awnum:2:',':'round':'false':'true':' '}}</div>
+          </div>
+          <h3>basic number with $ currency </h3>
+          <div class="form-group" ng-init="filter4=-1234.5678">
+            <div>Model value without filter:{{filter4}} </div>
+            <div>Filter: {{filter4|awnum:2:',':'round':'false':'false':' ':'$'}}</div>
+          </div>
+          <h3>basic number with &#x20AC; currency </h3>
+          <div class="form-group" ng-init="filter5=1234.5678">
+            <div>Model value without filter:{{filter5}} </div>
+            <div>Filter: {{filter5|awnum:2:',':'round':'false':'false':' ':null:'&#x20AC;'}}</div>
           </div>
         </div>
       </div>
