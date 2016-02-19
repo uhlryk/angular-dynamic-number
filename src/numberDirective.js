@@ -1,14 +1,16 @@
 /*jslint node: true */
 (function(window, angular, undefined) {"use strict";
-  function convModelToView(modelValue, viewSeparator){
+  function convModelToView(modelValue, viewSeparator, prepend, append){
     if(modelValue === undefined) {
       return '';
     }
+    var newViewValue = '';
     if(viewSeparator === ',') {
-      return String(modelValue).replace(".",",");
+      newViewValue = String(modelValue).replace(".",",");
     } else {
-      return String(modelValue);
+      newViewValue = String(modelValue);
     }
+    return addPrependAppend(newViewValue, prepend, append);
   }
   function convViewToModel(viewValue, viewSeparator, thousandSeparator) {
     if(viewSeparator === ',') {
@@ -16,6 +18,22 @@
     } else if(viewSeparator === '.') {
       return String(viewValue).replace(/[,\s]/g,"");
     }
+  }
+  function addPrependAppend(value, prepend, append) {
+    var newViewValue = value;
+    if(append) {
+      newViewValue = newViewValue + append;
+    }
+    if(prepend) {
+      if(/^\-.+/.test(newViewValue)) {
+        newViewValue = newViewValue.replace('-', '-' + prepend);
+      } else if(/^\-/.test(newViewValue)) {
+        newViewValue = newViewValue;
+      } else {
+        newViewValue = prepend + newViewValue;
+      }
+    }
+    return newViewValue;
   }
   function initIntegerPart(attrs_num_int, def_num_int){
     if(attrs_num_int >= 0){
@@ -101,6 +119,16 @@
       return def_thousand;
     }
   }
+  function initNumAppendPrepend(attrs_num_char){
+    var regexp = new RegExp('[^\\d,\\.\\s\\-]{1}');
+    if(regexp.test(attrs_num_char)) {
+      return attrs_num_char;
+    }
+    return null;
+  }
+
+
+
   function buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber){
     var negativeRegex = '-?';
     if(isPositiveNumber === false && isNegativeNumber === true) {
@@ -126,6 +154,16 @@
       .replace(new RegExp('^-([\\.,\\s])', 'g'), "-0$1")//change -. to -0.
       .replace(new RegExp('^[\\.,\\s]','g'), "0$&");//change . to 0.
   }
+  function removePrependAppendChars(value, prepend, append) {
+    var newValue = value;
+    if(prepend) {
+      newValue = newValue.replace(new RegExp('[\\'+prepend+']','g'),'');
+    }
+    if(append) {
+      newValue = newValue.replace(new RegExp('[\\'+append+']','g'),'');
+    }
+    return newValue;
+  }
   function removeThousandSeparators(value, thousandSeparator){
     if(thousandSeparator === '.') {
       return String(value).replace(/\./g, "");
@@ -140,20 +178,20 @@
     value[0] = value[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
     return value.join('.');
   }
-  function changeViewValue(ngModelController, value){
+  function changeViewValue(ngModelController, value, prepend, append){
     // https://github.com/angular/angular.js/issues/13068
     // ngModelController.$viewValue = value;
-    ngModelController.$setViewValue(value);
+    ngModelController.$setViewValue(addPrependAppend(value, prepend, append));
     ngModelController.$render();
   }
-  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed, isThousandSeparator, thousandSeparator){
+  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed, isThousandSeparator, thousandSeparator, prepend, append){
     value = Number(value);
     if(!isNaN(value) && isFinite(value)) {
       var powerOfTen = Math.pow(10, fractionPart);
       if(numFixed) {
-        value =  convModelToView((roundFunction(value*powerOfTen)/powerOfTen).toFixed(fractionPart), fractionSeparator);
+        value =  convModelToView((roundFunction(value*powerOfTen)/powerOfTen).toFixed(fractionPart), fractionSeparator, prepend, append);
       } else {
-        value =  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator);
+        value =  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator, prepend, append);
       }
       if(isThousandSeparator){
         value = addThousandSeparator(value, thousandSeparator);
@@ -227,7 +265,9 @@
         numNeg: "@",
         numRound: "@",
         numThousand: "@",
-        numThousandSep: "@"
+        numThousandSep: "@",
+        numPrepend: "@",
+        numAppend: "@"
       },
       link: function(scope, element, attrs, ngModelController) {
         if(!element[0] || element[0].tagName !== 'INPUT' || element[0].type !== 'text') {
@@ -251,15 +291,17 @@
         var roundFunction = initRound(scope.numRound !== undefined ? scope.numRound : strategy.numRound, Math.round);
         var isThousandSeparator = initIsThousand(scope.numThousand !== undefined ? scope.numThousand : strategy.numThousand, false);
         var thousandSeparator = initThousandSeparator(scope.numThousandSep !== undefined ? scope.numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
-
+        var prepend = initNumAppendPrepend(scope.numPrepend !== undefined ? scope.numPrepend : strategy.numPrepend);
+        var append = initNumAppendPrepend(scope.numAppend !== undefined ? scope.numAppend : strategy.numAppend);
         if(isPositiveNumber === false && isNegativeNumber === false) {
           throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
         }
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
           var parsedValue = String(value);
+          parsedValue = removePrependAppendChars(parsedValue, prepend, append);
           if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
-            changeViewValue(ngModelController, 0);
+            changeViewValue(ngModelController, 0, prepend, append);
             return 0;
           }
           var cursorPosition = getCaretPosition(element[0]);
@@ -272,14 +314,14 @@
           parsedValue = removeLeadingZero(parsedValue);
 
           if(parsedValue === '' && String(value).charAt(0)=== '0'){
-            changeViewValue(ngModelController, 0);
+            changeViewValue(ngModelController, 0, prepend, append);
             return 0;
           }
           if(parsedValue === undefined || parsedValue === ''){
             return 0;
           }
           if(parsedValue === '-'){
-            changeViewValue(ngModelController, '-');
+            changeViewValue(ngModelController, '-', prepend, append);
             return 0;
           }
           /**
@@ -287,11 +329,11 @@
            * therefore view value is set from last correct model value (it must be formatted - change dot to comma)
            */
           if(viewRegexTest.test(parsedValue) === false){
-            var modelValue = convModelToView(ngModelController.$modelValue, fractionSeparator);
+            var modelValue = convModelToView(ngModelController.$modelValue, fractionSeparator, prepend, append);
             if(isThousandSeparator){
               modelValue = addThousandSeparator(modelValue, thousandSeparator);
             }
-            changeViewValue(ngModelController, modelValue);
+            changeViewValue(ngModelController, modelValue, prepend, append);
             setCaretPosition(element[0],cursorPosition-1);
             return ngModelController.$modelValue;
           }
@@ -306,7 +348,7 @@
               parsedValue = addThousandSeparator(parsedValue, thousandSeparator);
               dots = countThousandSeparatorToPosition(parsedValue,thousandSeparator,currentPosition);
             }
-            changeViewValue(ngModelController, parsedValue);
+            changeViewValue(ngModelController, parsedValue, prepend, append);
             setCaretPosition(element[0],currentPosition + dots);
             return convViewToModel(parsedValue, fractionSeparator, thousandSeparator);
           }
@@ -315,7 +357,7 @@
          * it is like filter,
          */
         ngModelController.$formatters.push(function(value){
-          return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, false, isThousandSeparator, thousandSeparator);
+          return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, false, isThousandSeparator, thousandSeparator, prepend, append);
         });
       }
     };
@@ -339,14 +381,16 @@
     };
   })
   .filter('awnum', function() {
-    return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep) {
+    return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep, numPrepend, numAppend) {
       var fractionPart = initFractionPart(numFract, 2);
       var fractionSeparator = initSeparator(numSep, '.');
       var roundFunction = initRound(numRound, Math.round);
       var isFixed = initIsFixed(numFixed, false);
       var isThousandSeparator = initIsThousand(numThousand, false);
       var thousandSeparator = initThousandSeparator(numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
-      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator);
+      var prepend = initNumAppendPrepend(numPrepend);
+      var append = initNumAppendPrepend(numAppend);
+      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator, prepend, append);
     };
   })
   .directive('awnum', ['dynamicNumberStrategy',dynamicNumberDirective]);
