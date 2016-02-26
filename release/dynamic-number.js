@@ -185,6 +185,9 @@
     ngModelController.$render();
   }
   function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed, isThousandSeparator, thousandSeparator, prepend, append){
+    if(value === '' || value === undefined || value === null) {
+      return '';
+    }
     value = Number(value);
     if(!isNaN(value) && isFinite(value)) {
       var powerOfTen = Math.pow(10, fractionPart);
@@ -390,7 +393,11 @@
       var thousandSeparator = initThousandSeparator(numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
       var prepend = initNumAppendPrepend(numPrepend);
       var append = initNumAppendPrepend(numAppend);
-      return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator, prepend, append);
+      var filteredValue = filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator, prepend, append);
+      if(filteredValue === '') {
+        return '0';
+      }
+      return filteredValue;
     };
   })
   .directive('awnum', ['dynamicNumberStrategy',dynamicNumberDirective]);

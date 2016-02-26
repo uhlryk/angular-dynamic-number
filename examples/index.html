@@ -30,22 +30,22 @@
           <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';value6 = '';value7 = '';value8='';value9='';value10='';value11='';">
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator comma</label>
-              <input type="text" ng-trim=false ng-model="value1" class="form-control" awnum num-sep="," num-int=4 num-fract=2 placeholder="e.g. XXXX,XX">
+              <input type="text" ng-trim=false ng-model="value1" class="form-control" awnum num-sep="," num-int=4 num-fract=2 placeholder='e.g. XXXX,XX'>
               <div>How looks model: {{value1}}</div>
             </div>
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator dot, tousand separator comma</label>
-              <input type="text" ng-trim=false ng-model="value6" class="form-control" awnum num-sep="." num-int=8 num-fract=2 num-thousand='true'>
+              <input type="text" ng-trim=false ng-model="value6" class="form-control" awnum num-sep="." num-int=8 num-fract=2 num-thousand='true' placeholder='e.g. X,XXX.XX'>
               <div>How looks model: {{value6}}</div>
             </div>
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator comma, tousand separator dot</label>
-              <input type="text" ng-trim=false ng-model="value7" class="form-control" awnum num-sep="," num-int=8 num-fract=2 num-thousand='true'>
+              <input type="text" ng-trim=false ng-model="value7" class="form-control" awnum num-sep="," num-int=8 num-fract=2 num-thousand='true' placeholder='e.g. X.XXX,XX'>
               <div>How looks model: {{value7}}</div>
             </div>
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator comma, tousand separator space</label>
-              <input type="text" ng-trim=false ng-model="value9" class="form-control" awnum num-sep="," num-int=8 num-fract=2 num-thousand='true' num-thousand-sep="{{' '}}" >
+              <input type="text" ng-trim=false ng-model="value9" class="form-control" awnum num-sep="," num-int=8 num-fract=2 num-thousand='true' num-thousand-sep="{{' '}}"  placeholder='e.g. X XXX,XX'>
               <div>How looks model: {{value9}}</div>
             </div>
             <div class="form-group">

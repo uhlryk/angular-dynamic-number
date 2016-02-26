@@ -16,6 +16,57 @@ describe('Angular-dynamic-number basic', function() {
         $scope.testInput = "";
       });
     });
+    describe('test init values', function() {
+      it('should have view value "" and model value "" when init value is ""', function () {
+        $scope.testInput = "";
+        $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum/></form>')($scope);
+        $scope.$digest();
+
+        expect($scope.testInput).toEqual('');
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
+      });
+      it('should have view value "12" and model value 12 when init value is 12', function () {
+        $scope.testInput = 0;
+        $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum/></form>')($scope);
+        $scope.$digest();
+
+        expect($scope.testInput).toEqual(0);
+        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+      });
+      it('should have view value "12" and model value 12 when init value is 12', function () {
+        $scope.testInput = 12;
+        $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum/></form>')($scope);
+        $scope.$digest();
+
+        expect($scope.testInput).toEqual(12);
+        expect($scope.testForm.testInput.$viewValue).toEqual('12');
+      });
+      it('should have view value "" and model value null when init value is null', function () {
+        $scope.testInput = null;
+        $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum/></form>')($scope);
+        $scope.$digest();
+
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
+      });
+      it('should have view value "" and model value undefined when init value is undefined', function () {
+        $scope.testInput = undefined;
+        $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum/></form>')($scope);
+        $scope.$digest();
+
+        expect($scope.testInput).toEqual(undefined);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
+      });
+      //directive modify model only when user types to input. Id doesn't change it only because init model value is wrong -this is responsibility of dev to have correct init value.
+      it('should have view value "" and model value string when init value is string', function () {
+        $scope.testInput = 'dsads';
+        $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum/></form>')($scope);
+        $scope.$digest();
+
+        expect($scope.testInput).toEqual('dsads');
+        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+      });
+    });
     describe('number format: 2 integeres, decimals dot separator, positive and negative', function() {
       beforeEach(function(){
         $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum num-int="2" num-sep="." num-fract="2"/></form>')($scope);
