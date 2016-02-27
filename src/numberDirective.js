@@ -301,6 +301,7 @@
         }
         var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
         ngModelController.$parsers.unshift(function(value){
+
           var parsedValue = String(value);
           parsedValue = removePrependAppendChars(parsedValue, prepend, append);
           if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
@@ -308,9 +309,10 @@
             return 0;
           }
           var cursorPosition = getCaretPosition(element[0]);
+          if(prepend) {
+            cursorPosition--;
+          }
           var valBeforeCursor = parsedValue.slice(0,cursorPosition);
-          var valLengthBeforeCursor = valBeforeCursor.length;
-
           valBeforeCursor = removeThousandSeparators(valBeforeCursor, thousandSeparator);
           parsedValue = removeThousandSeparators(parsedValue, thousandSeparator);
           valBeforeCursor = removeLeadingZero(valBeforeCursor);
@@ -346,13 +348,27 @@
            */
           else {
             var dots = 0;
-            var currentPosition = cursorPosition - valLengthBeforeCursor + valBeforeCursor.length;
+            var currentPosition = valBeforeCursor.length;
             if(isThousandSeparator){
               parsedValue = addThousandSeparator(parsedValue, thousandSeparator);
               dots = countThousandSeparatorToPosition(parsedValue,thousandSeparator,currentPosition);
             }
+            if(prepend) {
+              dots++;
+              if(new RegExp('^(\\-\\d)$').test(parsedValue)) {
+                dots+=2;
+              }
+              if(new RegExp('^(\\d)$').test(parsedValue)) {
+                dots++;
+              }
+            }
             changeViewValue(ngModelController, parsedValue, prepend, append);
-            setCaretPosition(element[0],currentPosition + dots);
+
+            setCaretPosition(element[0], currentPosition + dots);
+            setTimeout(function() {
+              setCaretPosition(element[0], currentPosition + dots);
+            },1);
+
             return convViewToModel(parsedValue, fractionSeparator, thousandSeparator);
           }
         });
