@@ -184,7 +184,17 @@
     ngModelController.$setViewValue(addPrependAppend(value, prepend, append));
     ngModelController.$render();
   }
-  function filterModelValue(value, fractionPart, fractionSeparator, roundFunction, numFixed, isThousandSeparator, thousandSeparator, prepend, append){
+  function filterModelValue(
+    value,
+    fractionPart,
+    fractionSeparator,
+    roundFunction,
+    numFixed,
+    isThousandSeparator,
+    thousandSeparator,
+    prepend,
+    append
+  ){
     if(value === '' || value === undefined || value === null) {
       return '';
     }
@@ -255,6 +265,152 @@
     }
     return countDots;
   }
+
+  function createPropertyObject(scope, key, value) {
+    var properties = {
+      awnum: scope.awnum,
+      numInt: scope.numInt,
+      numFract: scope.numFract,
+      numSep: scope.numSep,
+      numPos: scope.numPos,
+      numNeg: scope.numNeg,
+      numRound: scope.numRound,
+      numThousand: scope.numThousand,
+      numThousandSep: scope.numThousandSep,
+      numPrepend: scope.numPrepend,
+      numAppend: scope.numAppend
+    };
+    if(key) {
+      properties[key] = value;
+    }
+    return properties;
+  }
+
+  function initAllProperties(properties, element, attrs, ngModelController, dynamicNumberStrategy){
+    var strategy = {};
+    if(properties.awnum) {
+      strategy = dynamicNumberStrategy.getStrategy(properties.awnum);
+    }
+    var integerPart = initIntegerPart(properties.numInt !== undefined ? properties.numInt : strategy.numInt, 6);
+    var fractionPart = initFractionPart(properties.numFract !== undefined ? properties.numFract : strategy.numFract, 2);
+    var fractionSeparator = initSeparator(properties.numSep !== undefined ?  properties.numSep : strategy.numSep, '.');
+    var isPositiveNumber = initIsPositive(properties.numPos !== undefined ?  properties.numPos : strategy.numPos, true);
+    var isNegativeNumber = initIsNegative(properties.numNeg !== undefined ? properties.numNeg : strategy.numNeg, true);
+    var roundFunction = initRound(properties.numRound !== undefined ? properties.numRound : strategy.numRound, Math.round);
+    var isThousandSeparator = initIsThousand(properties.numThousand !== undefined ? properties.numThousand : strategy.numThousand, false);
+    var thousandSeparator = initThousandSeparator(properties.numThousandSep !== undefined ? properties.numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
+    var prepend = initNumAppendPrepend(properties.numPrepend !== undefined ? properties.numPrepend : strategy.numPrepend);
+    var append = initNumAppendPrepend(properties.numAppend !== undefined ? properties.numAppend : strategy.numAppend);
+    if(isPositiveNumber === false && isNegativeNumber === false) {
+      throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
+    }
+    var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
+    return {
+      element: element,
+      attrs: attrs,
+      ngModelController: ngModelController,
+      viewRegexTest: viewRegexTest,
+      integerPart: integerPart,
+      fractionPart: fractionPart,
+      fractionSeparator: fractionSeparator,
+      isPositiveNumber: isPositiveNumber,
+      isNegativeNumber: isNegativeNumber,
+      roundFunction: roundFunction,
+      isThousandSeparator: isThousandSeparator,
+      thousandSeparator: thousandSeparator,
+      prepend: prepend,
+      append: append
+    }
+  }
+
+  function directiveParser(value, parameters) {
+
+    var element = parameters.element;
+    var attrs = parameters.attrs;
+    var ngModelController = parameters.ngModelController;
+    var viewRegexTest = parameters.viewRegexTest;
+    var integerPart = parameters.integerPart;
+    var fractionPart = parameters.fractionPart;
+    var fractionSeparator = parameters.fractionSeparator;
+    var isPositiveNumber = parameters.isPositiveNumber;
+    var isNegativeNumber = parameters.isNegativeNumber;
+    var roundFunction = parameters.roundFunction;
+    var isThousandSeparator = parameters.isThousandSeparator;
+    var thousandSeparator = parameters.thousandSeparator;
+    var prepend = parameters.prepend;
+    var append = parameters.append;
+
+    var parsedValue = String(value);
+    parsedValue = removePrependAppendChars(parsedValue, prepend, append);
+    if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
+      changeViewValue(ngModelController, 0, prepend, append);
+      return 0;
+    }
+    var cursorPosition = getCaretPosition(element[0]);
+    if(prepend) {
+      cursorPosition--;
+    }
+    var valBeforeCursor = parsedValue.slice(0,cursorPosition);
+    valBeforeCursor = removeThousandSeparators(valBeforeCursor, thousandSeparator);
+    parsedValue = removeThousandSeparators(parsedValue, thousandSeparator);
+    valBeforeCursor = removeLeadingZero(valBeforeCursor);
+    parsedValue = removeLeadingZero(parsedValue);
+
+    if(parsedValue === '' && String(value).charAt(0)=== '0'){
+      changeViewValue(ngModelController, 0, prepend, append);
+      return 0;
+    }
+    if(parsedValue === undefined || parsedValue === ''){
+      return 0;
+    }
+    if(parsedValue === '-'){
+      changeViewValue(ngModelController, '-', prepend, append);
+      return 0;
+    }
+    /**
+     * view value failed 'correct view format' test
+     * therefore view value is set from last correct model value (it must be formatted - change dot to comma)
+     */
+    if(viewRegexTest.test(parsedValue) === false){
+      var modelValue = convModelToView(ngModelController.$modelValue, fractionSeparator, prepend, append);
+      if(isThousandSeparator){
+        modelValue = addThousandSeparator(modelValue, thousandSeparator);
+      }
+      changeViewValue(ngModelController, modelValue, prepend, append);
+      setCaretPosition(element[0],cursorPosition-1);
+      return ngModelController.$modelValue;
+    }
+    /**
+     * view value success 'correct view format' test
+     * therefore model value is set from correct view value (it must be formatter - change comma to dot)
+     */
+    else {
+      var dots = 0;
+      var currentPosition = valBeforeCursor.length;
+      if(isThousandSeparator){
+        parsedValue = addThousandSeparator(parsedValue, thousandSeparator);
+        dots = countThousandSeparatorToPosition(parsedValue,thousandSeparator,currentPosition);
+      }
+      if(prepend) {
+        dots++;
+        if(new RegExp('^(\\-\\d)$').test(parsedValue)) {
+          dots+=2;
+        }
+        if(new RegExp('^(\\d)$').test(parsedValue)) {
+          dots++;
+        }
+      }
+      changeViewValue(ngModelController, parsedValue, prepend, append);
+
+      setCaretPosition(element[0], currentPosition + dots);
+      setTimeout(function() {
+        setCaretPosition(element[0], currentPosition + dots);
+      },1);
+
+      return convViewToModel(parsedValue, fractionSeparator, thousandSeparator);
+    }
+  }
+
   function dynamicNumberDirective(dynamicNumberStrategy) {
     return {
       restrict:'A',
@@ -281,102 +437,35 @@
           console.warn ('Directive angular-dynamic-number need ngModel attribute');
           return;
         }
+        //scope.$watch('numPrepend', function(newValue, oldValue){
+        //  console.log('numPrepend has changed', newValue);
+        //});
 
-        var strategy = {};
-        if(scope.awnum) {
-          strategy = dynamicNumberStrategy.getStrategy(scope.awnum);
-        }
-        var integerPart = initIntegerPart(scope.numInt !== undefined ? scope.numInt : strategy.numInt, 6);
-        var fractionPart = initFractionPart(scope.numFract !== undefined ? scope.numFract : strategy.numFract, 2);
-        var fractionSeparator = initSeparator(scope.numSep !== undefined ?  scope.numSep : strategy.numSep, '.');
-        var isPositiveNumber = initIsPositive(scope.numPos !== undefined ?  scope.numPos : strategy.numPos, true);
-        var isNegativeNumber = initIsNegative(scope.numNeg !== undefined ? scope.numNeg : strategy.numNeg, true);
-        var roundFunction = initRound(scope.numRound !== undefined ? scope.numRound : strategy.numRound, Math.round);
-        var isThousandSeparator = initIsThousand(scope.numThousand !== undefined ? scope.numThousand : strategy.numThousand, false);
-        var thousandSeparator = initThousandSeparator(scope.numThousandSep !== undefined ? scope.numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
-        var prepend = initNumAppendPrepend(scope.numPrepend !== undefined ? scope.numPrepend : strategy.numPrepend);
-        var append = initNumAppendPrepend(scope.numAppend !== undefined ? scope.numAppend : strategy.numAppend);
-        if(isPositiveNumber === false && isNegativeNumber === false) {
-          throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
-        }
-        var viewRegexTest = buildRegexp(integerPart, fractionPart, fractionSeparator, isPositiveNumber, isNegativeNumber);
+        var initObject = initAllProperties(
+          createPropertyObject(scope),
+          element,
+          attrs,
+          ngModelController,
+          dynamicNumberStrategy
+        );
+
         ngModelController.$parsers.unshift(function(value){
-
-          var parsedValue = String(value);
-          parsedValue = removePrependAppendChars(parsedValue, prepend, append);
-          if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
-            changeViewValue(ngModelController, 0, prepend, append);
-            return 0;
-          }
-          var cursorPosition = getCaretPosition(element[0]);
-          if(prepend) {
-            cursorPosition--;
-          }
-          var valBeforeCursor = parsedValue.slice(0,cursorPosition);
-          valBeforeCursor = removeThousandSeparators(valBeforeCursor, thousandSeparator);
-          parsedValue = removeThousandSeparators(parsedValue, thousandSeparator);
-          valBeforeCursor = removeLeadingZero(valBeforeCursor);
-          parsedValue = removeLeadingZero(parsedValue);
-
-          if(parsedValue === '' && String(value).charAt(0)=== '0'){
-            changeViewValue(ngModelController, 0, prepend, append);
-            return 0;
-          }
-          if(parsedValue === undefined || parsedValue === ''){
-            return 0;
-          }
-          if(parsedValue === '-'){
-            changeViewValue(ngModelController, '-', prepend, append);
-            return 0;
-          }
-          /**
-           * view value failed 'correct view format' test
-           * therefore view value is set from last correct model value (it must be formatted - change dot to comma)
-           */
-          if(viewRegexTest.test(parsedValue) === false){
-            var modelValue = convModelToView(ngModelController.$modelValue, fractionSeparator, prepend, append);
-            if(isThousandSeparator){
-              modelValue = addThousandSeparator(modelValue, thousandSeparator);
-            }
-            changeViewValue(ngModelController, modelValue, prepend, append);
-            setCaretPosition(element[0],cursorPosition-1);
-            return ngModelController.$modelValue;
-          }
-          /**
-           * view value success 'correct view format' test
-           * therefore model value is set from correct view value (it must be formatter - change comma to dot)
-           */
-          else {
-            var dots = 0;
-            var currentPosition = valBeforeCursor.length;
-            if(isThousandSeparator){
-              parsedValue = addThousandSeparator(parsedValue, thousandSeparator);
-              dots = countThousandSeparatorToPosition(parsedValue,thousandSeparator,currentPosition);
-            }
-            if(prepend) {
-              dots++;
-              if(new RegExp('^(\\-\\d)$').test(parsedValue)) {
-                dots+=2;
-              }
-              if(new RegExp('^(\\d)$').test(parsedValue)) {
-                dots++;
-              }
-            }
-            changeViewValue(ngModelController, parsedValue, prepend, append);
-
-            setCaretPosition(element[0], currentPosition + dots);
-            setTimeout(function() {
-              setCaretPosition(element[0], currentPosition + dots);
-            },1);
-
-            return convViewToModel(parsedValue, fractionSeparator, thousandSeparator);
-          }
+          return directiveParser(value, initObject);
         });
         /**
          * it is like filter,
          */
         ngModelController.$formatters.push(function(value){
-          return filterModelValue(value, fractionPart, fractionSeparator, roundFunction, false, isThousandSeparator, thousandSeparator, prepend, append);
+          return filterModelValue(
+            value,
+            initObject.fractionPart,
+            initObject.fractionSeparator,
+            initObject.roundFunction,
+            false,
+            initObject.isThousandSeparator,
+            initObject.thousandSeparator,
+            initObject.prepend,
+            initObject.append);
         });
       }
     };
