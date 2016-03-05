@@ -411,6 +411,27 @@
     }
   }
 
+  function triggerParsers(ngModelController, value) {
+    ngModelController.$setViewValue('');
+    ngModelController.$render();
+    ngModelController.$setViewValue(value);
+    ngModelController.$render();
+  }
+  function onPropertyWatch(ngModelController, initObject){
+    var value = filterModelValue(
+      ngModelController.$modelValue,
+      initObject.fractionPart,
+      initObject.fractionSeparator,
+      initObject.roundFunction,
+      false,
+      initObject.isThousandSeparator,
+      initObject.thousandSeparator,
+      initObject.prepend,
+      initObject.append
+    );
+    triggerParsers(ngModelController, value);
+  }
+
   function dynamicNumberDirective(dynamicNumberStrategy) {
     return {
       restrict:'A',
@@ -437,10 +458,6 @@
           console.warn ('Directive angular-dynamic-number need ngModel attribute');
           return;
         }
-        //scope.$watch('numPrepend', function(newValue, oldValue){
-        //  console.log('numPrepend has changed', newValue);
-        //});
-
         var initObject = initAllProperties(
           createPropertyObject(scope),
           element,
@@ -448,6 +465,78 @@
           ngModelController,
           dynamicNumberStrategy
         );
+
+        scope.$watch('numInt', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numInt', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numFract', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numFract', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numSep', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numSep', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numPos', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numPos', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numNeg', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numNeg', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numThousand', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numThousand', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numThousandSep', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numThousandSep', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numAppend', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numAppend', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
+
+        scope.$watch('numPrepend', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numPrepend', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
+        });
 
         ngModelController.$parsers.unshift(function(value){
           return directiveParser(value, initObject);
@@ -465,7 +554,8 @@
             initObject.isThousandSeparator,
             initObject.thousandSeparator,
             initObject.prepend,
-            initObject.append);
+            initObject.append
+          );
         });
       }
     };

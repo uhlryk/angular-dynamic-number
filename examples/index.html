@@ -3,7 +3,8 @@
   <head>
     <title>My Angular App</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <script data-require="angular.js@1.5.0" data-semver="1.5.0" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>-->
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script> -->
     <script src="../release/dynamic-number.js"></script>
     <script>
@@ -24,8 +25,8 @@
   </head>
   <body>
     <div class="container-fluid content">
-      <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
-        <div class="row">
+      <div class="row">
+        <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
           <h1>Example of angular dynamic number directive</h1>
           <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';value6 = '';value7 = '';value8='';value9='';value10='';value11='';">
             <div class="form-group">
@@ -84,6 +85,63 @@
               <div>How looks model: {{value8}}</div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+    <div id="dynamic-properties" class="container-fluid content">
+      <div class="row">
+        <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
+          <h1>Example of angular dynamic number directive with dynamic properties</h1>
+          <form name="directiveForm2" class="form-horizontal" ng-init="value = '1234.56';separator=',';integer=4;fraction=2;append='';thousand=true;">
+            <div class="form-group">
+              <label class="control-label">Select separator</label>
+              <select class="form-control" ng-model="separator">
+                <option>,</option>
+                <option>.</option>
+              </select>
+              <div>Active separator: {{separator}}</div>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model='thousand'>
+                is thousand separator
+              </label>
+              <div>Is thousand separator: {{thousand}}</div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Select Append Character</label>
+              <select class="form-control" ng-model="append">
+                <option></option>
+                <option>$</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+              </select>
+              <div>Active append: {{append}}</div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Value</label>
+              <input type='text' class="form-control"
+                 ng-trim=false
+                 ng-model='value'
+                 awnum
+                 num-sep="{{separator}}"
+                 num-int="{{integer}}"
+                 num-fract="{{fraction}}"
+                 num-thousand="{{thousand}}"
+                 num-thousand-sep="{{' '}}"
+                 num-append="{{append}}"
+              >
+              <div>How looks model: {{value}}</div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid content">
+      <div class="row">
+        <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
           <h1>Example of angular dynamic number filter</h1>
           <h3>basic</h3>
           <div class="form-group" ng-init="filter1=1234.5678">
