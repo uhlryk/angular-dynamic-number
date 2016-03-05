@@ -18,6 +18,8 @@ It works also when you set in controller your model value (with dot) and if you 
 There is also filter for one directional binding (ngBind). It round fraction part to fixed number of digits. Round method can be select from
 Math.round, Math.ceil and Math.floor. It can show comma or dot as decimal separator.
 
+It even allow to dynamically change directive properties. Just set them as models. 
+
 It is also React version available [React Dynamic Number](https://github.com/uhlryk/react-dynamic-number)
 
 ## Demo:
@@ -35,6 +37,7 @@ It is also React version available [React Dynamic Number](https://github.com/uhl
 - keeps cursor position
 - custom strategies
 - allow add currency (single character) 
+- allow to dynamically change directive properties
 
 ## Limitations:
 Directive is designed for an input text field ( **type="text"** ). The input field must have ngModel.
@@ -113,6 +116,25 @@ Allow to set single character prepend currency e.g. $1234.12. Html could have pr
 
 Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
 € = `&#x20AC;`
+
+## Dynamic properties
+
+Some of properties of directive can be a models. And change in models change properties in directive. For example you can change currency, decimal separator etc.
+Demo page has example of usage dynamic properties.
+
+In short separator, integer, fraction, thousand, append are models
+
+    <input type='text' class="form-control"
+     ng-model='value'
+     awnum
+     num-sep="{{separator}}"
+     num-int="{{integer}}"
+     num-fract="{{fraction}}"
+     num-thousand="{{thousand}}"
+     num-append="{{append}}"
+    >
+
+Changes of some properties reset value in input (num-int, num-fract). Others properties after changes recreate value in input.
 
 ## Custom strategies
 
