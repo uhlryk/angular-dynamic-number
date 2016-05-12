@@ -230,7 +230,7 @@
       iCaretPos = oSel.text.length;
     }
     else if (oField.selectionStart || oField.selectionStart == '0')
-      iCaretPos = oField.selectionStart;
+      iCaretPos = oField.selectionDirection == 'backward' ? oField.selectionStart : oField.selectionEnd;
     return (iCaretPos);
   }
   /**
