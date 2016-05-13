@@ -40,7 +40,7 @@ It is also React version available [React Dynamic Number](https://github.com/uhl
 - allow to dynamically change directive properties
 
 ## Limitations:
-Directive is designed for an input text field ( **type="text"** ). The input field must have ngModel.
+Directive is designed for input text/tel field ( **type="text"** and **type="tel"** ). Tel field type triggers numeric keyboard on mobile devices. The input field must have ngModel.
 
 ## Installation:
 ### npm
