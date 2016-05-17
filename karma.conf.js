@@ -18,7 +18,8 @@ module.exports = function(config) {
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'release/dynamic-number.js',
-      'test/directiveSpec.js'
+      'test/directiveSpec.js',
+      'test/mobileDirectiveSpec.js'
     ],
 
 
