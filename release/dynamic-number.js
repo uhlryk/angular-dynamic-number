@@ -450,8 +450,8 @@
         numAppend: "@"
       },
       link: function(scope, element, attrs, ngModelController) {
-        if(!element[0] || element[0].tagName !== 'INPUT' || element[0].type !== 'text') {
-          console.warn ('Directive angular-dynamic-number works only for \'input\' tag with type = \'text\'');
+        if(!element[0] || element[0].tagName !== 'INPUT' || (element[0].type !== 'text' && element[0].type !== 'tel')) {
+          console.warn ('Directive angular-dynamic-number works only for \'input\' tag with type = \'text\' or type = \'tel\'');
           return;
         }
         if(!ngModelController) {
