@@ -173,10 +173,10 @@
       return String(value).replace(new RegExp('\\s','g'), "");
     }
   }
-  function addThousandSeparator(value, thousandSeparator){
-    value = String(value).split('.');
+  function addThousandSeparator(value, fractionSeparator, thousandSeparator){
+    value = String(value).split(fractionSeparator);
     value[0] = value[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
-    return value.join('.');
+    return value.join(fractionSeparator);
   }
   function changeViewValue(ngModelController, value, prepend, append){
     // https://github.com/angular/angular.js/issues/13068
@@ -207,7 +207,7 @@
         value =  convModelToView(String(roundFunction(value*powerOfTen)/powerOfTen), fractionSeparator, prepend, append);
       }
       if(isThousandSeparator){
-        value = addThousandSeparator(value, thousandSeparator);
+        value = addThousandSeparator(value, fractionSeparator, thousandSeparator);
       }
       return value;
     }
@@ -374,7 +374,7 @@
     if(viewRegexTest.test(parsedValue) === false){
       var modelValue = convModelToView(ngModelController.$modelValue, fractionSeparator, prepend, append);
       if(isThousandSeparator){
-        modelValue = addThousandSeparator(modelValue, thousandSeparator);
+        modelValue = addThousandSeparator(modelValue, fractionSeparator, thousandSeparator);
       }
       changeViewValue(ngModelController, modelValue, prepend, append);
       setCaretPosition(element[0],cursorPosition-1);
@@ -388,7 +388,7 @@
       var dots = 0;
       var currentPosition = valBeforeCursor.length;
       if(isThousandSeparator){
-        parsedValue = addThousandSeparator(parsedValue, thousandSeparator);
+        parsedValue = addThousandSeparator(parsedValue, fractionSeparator, thousandSeparator);
         dots = countThousandSeparatorToPosition(parsedValue,thousandSeparator,currentPosition);
       }
       if(prepend) {
