@@ -1,8 +1,8 @@
 /*jslint node: true */
 (function(window, angular, undefined) {"use strict";
   function convModelToView(modelValue, viewSeparator, prepend, append){
-    if(modelValue === undefined) {
-      return '';
+    if(modelValue === undefined || modelValue === null || modelValue === "") {
+      return 0;
     }
     var newViewValue = '';
     if(viewSeparator === ',') {
