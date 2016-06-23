@@ -109,9 +109,9 @@
     }
     var regexp;
     if(fractionSeparator === '.') {
-      regexp = new RegExp('^[,\\s]$');
+      regexp = new RegExp('^[\',\\s]$');
     } else {
-      regexp = new RegExp('^[\\.\\s]$');
+      regexp = new RegExp('^[\'\\.\\s]$');
     }
     if(regexp.test(attrs_thousand)) {
       return attrs_thousand;
