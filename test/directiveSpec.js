@@ -275,7 +275,12 @@ describe('Angular-dynamic-number basic', function() {
     });
   });
   describe('filter', function(){
-    var $filter;
+    var $filter, dynamicNumberStrategyProvider;
+    beforeEach(function() {
+      module(function(_dynamicNumberStrategyProvider_) {
+        dynamicNumberStrategyProvider = _dynamicNumberStrategyProvider_;
+      });
+    });
     beforeEach(inject(function(_$filter_){
       $filter = _$filter_;
     }));
@@ -296,6 +301,24 @@ describe('Angular-dynamic-number basic', function() {
     describe('number format: 6 integeres, decimals comma separator, thousand dot separator', function() {
       it('should return 1.111,29 when value \'1111.287\' ', function () {
         expect($filter('awnum')('1111.287',2, ',','round','false','true')).toEqual('1.111,29');
+      });
+    });
+    describe('filter with custom strategy', function() {
+      beforeEach(function() {
+        dynamicNumberStrategyProvider.addStrategy('price', {
+          numFract: 1,
+          numSep: '.',
+          numPos: true,
+          numNeg: true,
+          numRound: 'round',
+          numThousand: true
+        });
+      });
+      it('should return 1,111.2 when value \'1111.16\' ', function () {
+        expect($filter('awnum')('1111.16', 'price')).toEqual('1,111.2');
+      });
+      it('should return 1.111,2 when value \'1111.16\' ', function () {
+        expect($filter('awnum')('1111.16', 'price', ',')).toEqual('1.111,2');
       });
     });
   });
