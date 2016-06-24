@@ -106,7 +106,7 @@ If true then number has thousand separator.
 
 **num-thousand-sep**:
 
-Set thousand separator (dot or comma or space) (enable if num-thousand = true, by default if num-sep equal dot then thousand separator is comma).
+Set thousand separator (dot or comma or space or apostrophe) (enable if num-thousand = true, by default if num-sep equal dot then thousand separator is comma).
 If you want to set separator as space remember that angular by default trim spaces. You can as value set "{{' '}}"
 
 **num-prepend**
@@ -199,7 +199,7 @@ If true then number has thousand separator.
 
 **numThousandSep**
 
-Set thousand separator (dot or comma or space).
+Set thousand separator (dot or comma or space or apostrophe).
 
 **numPrepend**
 
