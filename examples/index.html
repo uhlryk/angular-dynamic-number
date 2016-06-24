@@ -168,6 +168,11 @@
             <div>Model value without filter:{{filter5}} </div>
             <div>Filter: {{filter5|awnum:2:',':'round':'false':'false':' ':null:'&#x20AC;'}}</div>
           </div>
+          <h3>Example of angular dynamic number filter with strategy </h3>
+          <div class="form-group" ng-init="filter5=1234.5678">
+            <div>Model value without filter:{{filter5}} </div>
+            <div>Filter: {{filter5|awnum:'price'}}</div>
+          </div>
         </div>
       </div>
     </div>
