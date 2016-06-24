@@ -14,9 +14,9 @@
   }
   function convViewToModel(viewValue, viewSeparator, thousandSeparator) {
     if(viewSeparator === ',') {
-      return String(viewValue).replace(/[\.\s]/g,"").replace(",",".");
+      return String(viewValue).replace(/['\.\s]/g,"").replace(",",".");
     } else if(viewSeparator === '.') {
-      return String(viewValue).replace(/[,\s]/g,"");
+      return String(viewValue).replace(/[',\s]/g,"");
     }
   }
   function addPrependAppend(value, prepend, append) {
@@ -170,7 +170,7 @@
     } else if(thousandSeparator === ','){
       return String(value).replace(/,/g, "");
     } else {
-      return String(value).replace(new RegExp('\\s','g'), "");
+      return String(value).replace(new RegExp('[\'\\s]','g'), "");
     }
   }
   function addThousandSeparator(value, fractionSeparator, thousandSeparator){
