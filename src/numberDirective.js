@@ -578,16 +578,22 @@
       };
     };
   })
-  .filter('awnum', function() {
+  .filter('awnum', function(dynamicNumberStrategy) {
     return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep, numPrepend, numAppend) {
+      var strategy = {};
+      var fractionPart;  
+      if(angular.isString(numFract)) {
+        strategy = dynamicNumberStrategy.getStrategy(numFract);
+        numFract = strategy.numFract;  
+      }
       var fractionPart = initFractionPart(numFract, 2);
-      var fractionSeparator = initSeparator(numSep, '.');
-      var roundFunction = initRound(numRound, Math.round);
-      var isFixed = initIsFixed(numFixed, false);
-      var isThousandSeparator = initIsThousand(numThousand, false);
-      var thousandSeparator = initThousandSeparator(numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
-      var prepend = initNumAppendPrepend(numPrepend);
-      var append = initNumAppendPrepend(numAppend);
+      var fractionSeparator = initSeparator(numSep !== undefined ? numSep : strategy.numSep, '.');
+      var roundFunction = initRound(numRound !== undefined ? numRound : strategy.numRound, Math.round);
+      var isFixed = initIsFixed(numFixed !== undefined ? numFixed : strategy.numFixed, false);
+      var isThousandSeparator = initIsThousand(numThousand !== undefined ? numThousand : strategy.numThousand, false);
+      var thousandSeparator = initThousandSeparator(numThousandSep !== undefined ? numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
+      var prepend = initNumAppendPrepend(numPrepend !== undefined ? numPrepend : strategy.numPrepend);
+      var append = initNumAppendPrepend(numAppend !== undefined ? numAppend : strategy.numAppend);
       var filteredValue = filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator, prepend, append);
       if(filteredValue === '') {
         return '0';
