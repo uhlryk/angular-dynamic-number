@@ -233,6 +233,22 @@ describe('Angular-dynamic-number basic', function() {
         expect($scope.testForm.testInput.$viewValue).toEqual('-111 111.11');
       });
     });
+    describe('number format: 6 integeres, decimals dot separator, positive and negative, apostrophe thousand separator', function() {
+      beforeEach(function(){
+        var el = $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum num-int="8" num-sep="." num-fract="2" num-thousand="true"  num-thousand-sep="\'"/></form>')($scope);
+        $scope.$digest();
+      });
+      it('should have view value 111\'111.11 and model value 111111.11 when set 111\'111.11', function () {
+        $scope.testForm.testInput.$setViewValue('111\'111.11');
+        expect($scope.testInput).toEqual('111111.11');
+        expect($scope.testForm.testInput.$viewValue).toEqual('111\'111.11');
+      });
+      it('should have view value -111\'111.11 and model value -111111.11 when set -111\'111.11', function () {
+        $scope.testForm.testInput.$setViewValue('-111\'111.11');
+        expect($scope.testInput).toEqual('-111111.11');
+        expect($scope.testForm.testInput.$viewValue).toEqual('-111\'111.11');
+      });
+    });
     describe('custom strategy provider', function(){
       beforeEach(function(){
         dynamicNumberStrategyProvider.addStrategy('price', {
