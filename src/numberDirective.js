@@ -350,7 +350,7 @@
       wasPasted = false;
 
       // Remove all characters which are not number-relevant
-      var regex = new RegExp('[^' + fractionSeparator + thousandSeparator + '0-9]+', 'g');
+      var regex = new RegExp('[^' + ((isNegativeNumber) ? '-': '') + fractionSeparator + thousandSeparator + '0-9]+', 'g');
       parsedValue = parsedValue.replace(regex, '');
 
       // Remove trailing separators
