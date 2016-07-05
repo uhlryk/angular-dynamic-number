@@ -1,5 +1,8 @@
 /*jslint node: true */
 (function(window, angular, undefined) {"use strict";
+
+  var wasPasted = false;
+
   function convModelToView(modelValue, viewSeparator, prepend, append){
     if(modelValue === undefined || modelValue === null || modelValue === "") {
       return 0;
@@ -13,6 +16,7 @@
     return addPrependAppend(newViewValue, prepend, append);
   }
   function convViewToModel(viewValue, viewSeparator, thousandSeparator) {
+
     if(viewSeparator === ',') {
       return String(viewValue).replace(/['\.\s]/g,"").replace(",",".");
     } else if(viewSeparator === '.') {
@@ -341,6 +345,23 @@
     var append = parameters.append;
 
     var parsedValue = String(value);
+
+    if(wasPasted) {
+      wasPasted = false;
+
+      // Remove all characters which are not number-relevant
+      var regex = new RegExp('[^' + ((isNegativeNumber) ? '-': '') + fractionSeparator + thousandSeparator + '0-9]+', 'g');
+      parsedValue = parsedValue.replace(regex, '');
+
+      // Remove trailing separators
+      regex = new RegExp('^[' + fractionSeparator + thousandSeparator + ']');
+      parsedValue = parsedValue.replace(regex, '');
+
+      // Replace separator if at fraction position
+      regex = new RegExp('[' + fractionSeparator + thousandSeparator + ']([0-9]{' + fractionPart + '})$');
+      parsedValue = parsedValue.replace(regex, fractionSeparator + '$1');
+    }
+
     parsedValue = removePrependAppendChars(parsedValue, prepend, append);
     if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
       changeViewValue(ngModelController, 0, prepend, append);
@@ -465,6 +486,10 @@
           ngModelController,
           dynamicNumberStrategy
         );
+
+        element.on('paste', function() {
+          wasPasted = true;
+        });
 
         scope.$watch('numInt', function(newProperty, oldProperty ){
           if(oldProperty === newProperty) {
