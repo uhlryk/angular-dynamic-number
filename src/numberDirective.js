@@ -388,7 +388,11 @@
       return 0;
     }
     if(parsedValue === '-'){
-      changeViewValue(ngModelController, '-', prepend, append);
+      if(isPositiveNumber && !isNegativeNumber) {
+        changeViewValue(ngModelController, '', prepend, append);
+      } else {
+        changeViewValue(ngModelController, '-', prepend, append);
+      }
       return 0;
     }
     /**
