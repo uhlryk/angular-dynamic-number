@@ -191,6 +191,17 @@ describe('Angular-dynamic-number basic', function() {
         expect($scope.testForm.testInput.$viewValue).toEqual('-111,111.11');
       });
     });
+    describe('number format: integers, positive', function() {
+      beforeEach(function(){
+        var el = $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum num-int="2" num-sep="," num-fract="2" num-neg="false"/></form>')($scope);
+        $scope.$digest();
+      });
+      it('should have view value empty and model value 0 when set -', function () {
+        $scope.testForm.testInput.$setViewValue('-');
+        expect($scope.testInput).toEqual('0');
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
+      });
+    });
     describe('number format: 2 integers, decimals comma separator, negative', function() {
       beforeEach(function(){
         var el = $compile('<form name="testForm"><input type="text" name="testInput" ng-model="testInput" awnum num-int="2" num-sep="," num-fract="2" num-pos="false"/></form>')($scope);

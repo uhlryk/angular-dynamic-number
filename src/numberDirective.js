@@ -365,7 +365,7 @@
     parsedValue = removePrependAppendChars(parsedValue, prepend, append);
     if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
       changeViewValue(ngModelController, 0, prepend, append);
-      return 0;
+      return '0';
     }
     var cursorPosition = getCaretPosition(element[0]);
     if(prepend) {
@@ -379,10 +379,10 @@
 
     if(parsedValue === '' && String(value).charAt(0)=== '0'){
       changeViewValue(ngModelController, 0, prepend, append);
-      return 0;
+      return '0';
     }
     if(parsedValue === undefined || parsedValue === ''){
-      return 0;
+      return '0';
     }
     if(parsedValue === '-'){
       if(isPositiveNumber && !isNegativeNumber) {
@@ -390,7 +390,7 @@
       } else {
         changeViewValue(ngModelController, '-', prepend, append);
       }
-      return 0;
+      return '0';
     }
     /**
      * view value failed 'correct view format' test
