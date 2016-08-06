@@ -151,7 +151,6 @@
     return new RegExp('^'+negativeRegex+intRegex+fractRegex+'?$');
   }
   function removeLeadingZero(value){
-    // return String(value).replace(/^0+/g, "").replace(/^-00+/g, "-0").replace(/-0+\[\.,]/, "-0$&").replace(/^[\.,]/g, "0$&");
     return String(value)
       .replace(/^0+/g, "")//change 00000 to ''
       .replace(/^-0(\d+)/g, "-$1")//change -013212 to -0
@@ -182,9 +181,12 @@
     value[0] = value[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
     return value.join(fractionSeparator);
   }
-  function changeViewValue(ngModelController, value, prepend, append){
+  function changeViewValue(ngModelController, value, prepend, append, state, disable){
     // https://github.com/angular/angular.js/issues/13068
     // ngModelController.$viewValue = value;
+    if(disable) {
+      state.enable = false;
+    }
     ngModelController.$setViewValue(addPrependAppend(value, prepend, append));
     ngModelController.$render();
   }
@@ -327,8 +329,7 @@
     }
   }
 
-  function directiveParser(value, parameters) {
-
+  function directiveParser(value, parameters, state) {
     var element = parameters.element;
     var attrs = parameters.attrs;
     var ngModelController = parameters.ngModelController;
@@ -364,7 +365,7 @@
 
     parsedValue = removePrependAppendChars(parsedValue, prepend, append);
     if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
-      changeViewValue(ngModelController, 0, prepend, append);
+      changeViewValue(ngModelController, 0, prepend, append, state);
       return '0';
     }
     var cursorPosition = getCaretPosition(element[0]);
@@ -375,20 +376,31 @@
     valBeforeCursor = removeThousandSeparators(valBeforeCursor, thousandSeparator);
     parsedValue = removeThousandSeparators(parsedValue, thousandSeparator);
     valBeforeCursor = removeLeadingZero(valBeforeCursor);
+    var beforeRemovingLeadingZero = parsedValue;
     parsedValue = removeLeadingZero(parsedValue);
-
+    if(parsedValue === "0" + fractionSeparator && beforeRemovingLeadingZero === fractionSeparator && isPositiveNumber) {
+      if(fractionPart) {
+        changeViewValue(ngModelController, '0' + fractionSeparator, prepend, append, state, true);
+        setCaretPosition(element[0], 2);
+        return '0';
+      } else {
+        changeViewValue(ngModelController, '', prepend, append, state);
+        return '0';
+      }
+    }
     if(parsedValue === '' && String(value).charAt(0)=== '0'){
-      changeViewValue(ngModelController, 0, prepend, append);
+      changeViewValue(ngModelController, 0, prepend, append, state);
       return '0';
     }
     if(parsedValue === undefined || parsedValue === ''){
+      changeViewValue(ngModelController, '', prepend, append, state);
       return '0';
     }
     if(parsedValue === '-'){
       if(isPositiveNumber && !isNegativeNumber) {
-        changeViewValue(ngModelController, '', prepend, append);
+        changeViewValue(ngModelController, '', prepend, append, state);
       } else {
-        changeViewValue(ngModelController, '-', prepend, append);
+        changeViewValue(ngModelController, '-', prepend, append, state);
       }
       return '0';
     }
@@ -401,7 +413,7 @@
       if(isThousandSeparator){
         modelValue = addThousandSeparator(modelValue, fractionSeparator, thousandSeparator);
       }
-      changeViewValue(ngModelController, modelValue, prepend, append);
+      changeViewValue(ngModelController, modelValue, prepend, append, state);
       setCaretPosition(element[0],cursorPosition-1);
       return ngModelController.$modelValue;
     }
@@ -425,13 +437,8 @@
           dots++;
         }
       }
-      changeViewValue(ngModelController, parsedValue, prepend, append);
-
+      changeViewValue(ngModelController, parsedValue, prepend, append, state);
       setCaretPosition(element[0], currentPosition + dots);
-      setTimeout(function() {
-        setCaretPosition(element[0], currentPosition + dots);
-      },1);
-
       return convViewToModel(parsedValue, fractionSeparator, thousandSeparator);
     }
   }
@@ -566,9 +573,18 @@
           initObject = initAllProperties(createPropertyObject(scope, 'numPrepend', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
           onPropertyWatch(ngModelController, initObject);
         });
-
+        var state = {
+          enable: true,
+          count: 0
+        };
         ngModelController.$parsers.unshift(function(value){
-          return directiveParser(value, initObject);
+          if(state.enable) {
+            state.count ++;
+            return directiveParser(value, initObject, state);
+          } else {
+            state.enable = true;
+            return value;
+          }
         });
         /**
          * it is like filter,
