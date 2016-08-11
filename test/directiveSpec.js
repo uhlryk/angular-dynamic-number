@@ -198,12 +198,12 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should have view value empty and model value 0 when set -', function () {
         $scope.testForm.testInput.$setViewValue('-');
-        expect($scope.testInput).toEqual('0');
+        expect($scope.testInput).toEqual(0);
         expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
       it('should have view value 0, and model value 0, when set ,', function () {
         $scope.testForm.testInput.$setViewValue(',');
-        expect($scope.testInput).toEqual('0');
+        expect($scope.testInput).toEqual(0);
         expect($scope.testForm.testInput.$viewValue).toEqual('0,');
       });
     });
