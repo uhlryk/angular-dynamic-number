@@ -24,6 +24,12 @@ It even allow to dynamically change directive properties. Just set them as model
 
 It is also React version available [React Dynamic Number](https://github.com/uhlryk/react-dynamic-number)
 
+## Change Log:
+
+### v2.0.0: 
+
+model type is number instead of string. 
+
 ## Demo:
 [link](http://htmlpreview.github.io/?https://github.com/uhlryk/angular-dynamic-number/blob/master/examples/index.html)
 

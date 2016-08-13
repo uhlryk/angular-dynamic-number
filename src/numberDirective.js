@@ -187,7 +187,7 @@
     if(disable) {
       state.enable = false;
     }
-    ngModelController.$setViewValue(addPrependAppend(value, prepend, append));
+    ngModelController.$setViewValue(addPrependAppend(String(value), prepend, append));
     ngModelController.$render();
   }
   function filterModelValue(
@@ -270,6 +270,10 @@
       }
     }
     return countDots;
+  }
+
+  function prepareResponse(value) {
+    return Number(value);
   }
 
   function createPropertyObject(scope, key, value) {
@@ -579,7 +583,7 @@
         ngModelController.$parsers.unshift(function(value){
           if(state.enable) {
             state.count ++;
-            return directiveParser(value, initObject, state);
+            return prepareResponse(directiveParser(value, initObject, state));
           } else {
             state.enable = true;
             return value;
