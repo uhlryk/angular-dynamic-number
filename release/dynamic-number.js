@@ -1,5 +1,18 @@
 /*jslint node: true */
-(function(window, angular, undefined) {"use strict";
+(function (root, factory) {
+  "use strict";
+
+  if (typeof define === 'function' && define.amd) {
+    define(['angular'], factory);
+
+  } else if (typeof module !== 'undefined' && typeof module.exports === 'object') {
+    module.exports = factory(require('angular'));
+
+  } else {
+    return factory(root.angular);
+  }
+}(window, function(angular) {
+  'use strict';
 
   var wasPasted = false;
 
@@ -609,7 +622,9 @@
     };
   }
 
-  angular.module('dynamicNumber',[])
+  var moduleName = 'dynamicNumber';
+
+  angular.module(moduleName,[])
   .provider('dynamicNumberStrategy', function() {
     var strategies = {};
     this.addStrategy = function(name, strategy){
@@ -629,10 +644,10 @@
   .filter('awnum', function(dynamicNumberStrategy) {
     return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep, numPrepend, numAppend) {
       var strategy = {};
-      var fractionPart;  
+      var fractionPart;
       if(angular.isString(numFract)) {
         strategy = dynamicNumberStrategy.getStrategy(numFract);
-        numFract = strategy.numFract;  
+        numFract = strategy.numFract;
       }
       var fractionPart = initFractionPart(numFract, 2);
       var fractionSeparator = initSeparator(numSep !== undefined ? numSep : strategy.numSep, '.');
@@ -650,4 +665,6 @@
     };
   })
   .directive('awnum', ['dynamicNumberStrategy',dynamicNumberDirective]);
-})(window,window.angular);
+
+  return moduleName;
+}));
