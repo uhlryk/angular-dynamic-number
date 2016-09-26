@@ -176,10 +176,10 @@
   function removePrependAppendChars(value, prepend, append) {
     var newValue = value;
     if(prepend) {
-      newValue = newValue.replace(new RegExp('[\\'+prepend+']','g'),'');
+      newValue = newValue.replace(new RegExp('^\\'+prepend,'g'),'');
     }
     if(append) {
-      newValue = newValue.replace(new RegExp('[\\'+append+']','g'),'');
+      newValue = newValue.replace(new RegExp('\\'+append+'$','g'),'');
     }
     return newValue;
   }
@@ -407,7 +407,7 @@
     if(parsedValue === "0" + fractionSeparator && beforeRemovingLeadingZero === fractionSeparator && isPositiveNumber) {
       if(fractionPart) {
         changeViewValue(ngModelController, '0' + fractionSeparator, prepend, append, state, true);
-        setCaretPosition(element[0], 2);
+        // setCaretPosition(element[0], 2);
         return 0;
       } else {
         changeViewValue(ngModelController, '', prepend, append, state);
@@ -439,7 +439,9 @@
         modelValue = addThousandSeparator(modelValue, fractionSeparator, thousandSeparator);
       }
       changeViewValue(ngModelController, modelValue, prepend, append, state);
+      if(append) {
       setCaretPosition(element[0],cursorPosition-1);
+      }
       return ngModelController.$modelValue;
     }
     /**
@@ -617,7 +619,8 @@
             return prepareResponse(directiveParser(value, initObject, state));
           } else {
             state.enable = true;
-            return value;
+            // return value;
+            return prepareResponse(directiveParser(value, initObject, state));
           }
         });
         /**
