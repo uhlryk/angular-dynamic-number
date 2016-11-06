@@ -641,7 +641,7 @@
       };
     };
   })
-  .filter('awnum', function(dynamicNumberStrategy) {
+  .filter('awnum', ['dynamicNumberStrategy', function(dynamicNumberStrategy) {
     return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep, numPrepend, numAppend) {
       var strategy = {};
       var fractionPart;
@@ -663,7 +663,7 @@
       }
       return filteredValue;
     };
-  })
+  }])
   .directive('awnum', ['dynamicNumberStrategy',dynamicNumberDirective]);
 
   return moduleName;
