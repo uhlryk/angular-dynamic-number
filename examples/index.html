@@ -28,11 +28,16 @@
       <div class="row">
         <div class="col-sm-10 com-sm-offset-1 col-md-8 col-md-offset-2">
           <h1>Example of angular dynamic number directive</h1>
-          <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';value6 = '';value7 = '';value8='';value9='';value10='';value11='';value12='';value13='';">
+          <form name="directiveForm" class="form-horizontal" ng-init="value1 = '';value2 = '';value3 = '';value4 = '';value5 = '';value6 = '';value7 = '';value8='';value9='';value10='';value11='';value12='';value13='';value14='';">
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator comma</label>
               <input type="text" ng-trim=false ng-model="value1" class="form-control" awnum num-sep="," num-int=4 num-fract=2 placeholder='e.g. XXXX,XX'>
               <div>How looks model: {{value1}}</div>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Number may be positive or negative, decimal separator comma and fixed true</label>
+              <input type="text" ng-trim=false ng-model="value14" class="form-control" awnum num-sep="," num-int=4 num-fract=2 num-fixed='true' placeholder='e.g. XXXX,XX'>
+              <div>How looks model: {{value14}}</div>
             </div>
             <div class="form-group">
               <label class="control-label">Number may be positive or negative, decimal separator dot, tousand separator comma</label>

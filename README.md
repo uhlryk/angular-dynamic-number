@@ -106,6 +106,10 @@ If true then number can be negative (default 'true').
 
 Define round method for fraction part when convert from model to view and for filter
 
+**num-fixed
+
+If true then there is fixed number of fraction digets - (useful when fraction part is 00 and we need to show this zeros e.g. 12,00 )
+
 **num-thousand**:
 
 If true then number has thousand separator.
