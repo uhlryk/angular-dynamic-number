@@ -222,10 +222,8 @@
     // ngModelController.$viewValue = value;
     var version = angular.version;
     if(version.major === 1 && version.minor === 2) {
-      console.log("Z1");
       ngModelController.$viewValue = valueWithPrependAppend;
     } else {
-      console.log("Z2");
       ngModelController.$setViewValue(valueWithPrependAppend);
     }
     ngModelController.$render();
