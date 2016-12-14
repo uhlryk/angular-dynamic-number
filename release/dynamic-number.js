@@ -211,15 +211,23 @@
   }
 
   function changeViewValue(ngModelController, value, parameters, state, disable){
-    // https://github.com/angular/angular.js/issues/13068
-    // ngModelController.$viewValue = value;
+
     if(disable) {
       state.enable = false;
     }
     var valueString = String(value);
     var valueWithFixedZeros = addFixedZeros(valueString, parameters);
     var valueWithPrependAppend = addPrependAppend(valueWithFixedZeros, parameters.prepend, parameters.append);
-    ngModelController.$setViewValue(valueWithPrependAppend);
+    // https://github.com/angular/angular.js/issues/13068
+    // ngModelController.$viewValue = value;
+    var version = angular.version;
+    if(version.major === 1 && version.minor === 2) {
+      console.log("Z1");
+      ngModelController.$viewValue = valueWithPrependAppend;
+    } else {
+      console.log("Z2");
+      ngModelController.$setViewValue(valueWithPrependAppend);
+    }
     ngModelController.$render();
   }
   function filterModelValue(
