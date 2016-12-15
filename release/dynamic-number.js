@@ -405,6 +405,11 @@
     var append = parameters.append;
     var isFixed = parameters.isFixed;
 
+		var charCodeZero = '۰'.charCodeAt(0);
+    value = value.replace(/[۰-۹]/g, function (w) {
+      return w.charCodeAt(0) - charCodeZero;
+    });
+		
     var parsedValue = String(value);
 
     if(wasPasted) {
