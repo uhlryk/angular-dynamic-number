@@ -349,6 +349,10 @@
     return properties;
   }
 
+  function removeDoubledDecimalSeparators (value,parameters) {
+    return value.replace(new RegExp("[\\" + parameters.fractionSeparator + "]+","g"), parameters.fractionSeparator);
+  }
+
   function initAllProperties(properties, element, attrs, ngModelController, dynamicNumberStrategy){
     var strategy = {};
     if(properties.awnum) {
@@ -422,8 +426,8 @@
       regex = new RegExp('[' + fractionSeparator + thousandSeparator + ']([0-9]{' + fractionPart + '})$');
       parsedValue = parsedValue.replace(regex, fractionSeparator + '$1');
     }
-
     parsedValue = removePrependAppendChars(parsedValue, prepend, append);
+    parsedValue = removeDoubledDecimalSeparators(parsedValue, parameters);
     if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
       changeViewValue(ngModelController, 0, parameters, state);
       return 0;
