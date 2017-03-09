@@ -106,7 +106,7 @@ If true then number can be negative (default 'true').
 
 Define round method for fraction part when convert from model to view and for filter
 
-**num-fixed
+**num-fixed**:
 
 If true then there is fixed number of fraction digets - (useful when fraction part is 00 and we need to show this zeros e.g. 12,00 )
 
@@ -129,6 +129,10 @@ Allow to set single character prepend currency e.g. $1234.12. Html could have pr
 Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
 € = `&#x20AC;`
 
+**num-blank**
+
+Allow to set a default value when the value is null, undefined or empty string. (for example: '-' or 'N/A'). Default value is '0'
+
 ## Dynamic properties
 
 Some of properties of directive can be a models. And change in models change properties in directive. For example you can change currency, decimal separator etc.
@@ -144,6 +148,7 @@ In short separator, integer, fraction, thousand, append are models
      num-fract="{{fraction}}"
      num-thousand="{{thousand}}"
      num-append="{{append}}"
+     num-blank="{{blank}}"
     >
 
 Changes of some properties reset value in input (num-int, num-fract). Others properties after changes recreate value in input.
@@ -175,7 +180,8 @@ for example, create price strategy:
         numPos: true,
         numNeg: true,
         numRound: 'round',
-        numThousand: true
+        numThousand: true,
+        numBlank: '-'
       });
     }]);
 
@@ -220,6 +226,10 @@ Allow to set single character prepend currency e.g. $1234.12. Html could have pr
 
 Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
 € = `&#x20AC;`
+
+**num-blank**
+
+Allow to set a default value when the value is null, undefined or empty string. (for example: '-' or 'N/A'). Default value is '0'
 
 ## Filter with strategies
 

@@ -143,6 +143,10 @@
     }
     return null;
   }
+  function initNumBlank(attrs_num_char){
+      //TODO, need validation?
+       return attrs_num_char;
+    }
 
 
 
@@ -237,10 +241,11 @@
     isThousandSeparator,
     thousandSeparator,
     prepend,
-    append
+    append,
+    blank
   ){
     if(value === '' || value === undefined || value === null) {
-      return '';
+      return blank;
     }
     value = Number(value);
     if(!isNaN(value) && isFinite(value)) {
@@ -341,7 +346,8 @@
       numThousandSep: scope.numThousandSep,
       numPrepend: scope.numPrepend,
       numAppend: scope.numAppend,
-      numFixed: scope.numFixed
+      numFixed: scope.numFixed,
+      numBlank: scope.numBlank
     };
     if(key) {
       properties[key] = value;
@@ -368,6 +374,7 @@
     var thousandSeparator = initThousandSeparator(properties.numThousandSep !== undefined ? properties.numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
     var prepend = initNumAppendPrepend(properties.numPrepend !== undefined ? properties.numPrepend : strategy.numPrepend);
     var append = initNumAppendPrepend(properties.numAppend !== undefined ? properties.numAppend : strategy.numAppend);
+    var blank = initNumBlank(properties.numBlank !== undefined ? properties.numBlank : strategy.numBlank);
     var isFixed = initIsFixed(properties.numFixed !== undefined ? properties.numFixed : strategy.numFixed, false);
     if(isPositiveNumber === false && isNegativeNumber === false) {
       throw new Error('Number is set to not be positive and not be negative. Change num_pos attr or/and num_neg attr to true');
@@ -388,7 +395,8 @@
       thousandSeparator: thousandSeparator,
       prepend: prepend,
       append: append,
-      isFixed: isFixed
+      isFixed: isFixed,
+      blank: blank
     }
   }
 
@@ -408,6 +416,7 @@
     var prepend = parameters.prepend;
     var append = parameters.append;
     var isFixed = parameters.isFixed;
+    var blank = parameters.blank;
 
     var parsedValue = String(value);
 
@@ -525,7 +534,8 @@
       initObject.isThousandSeparator,
       initObject.thousandSeparator,
       initObject.prepend,
-      initObject.append
+      initObject.append,
+      initObject.blank
     );
     triggerParsers(ngModelController, value);
   }
@@ -546,7 +556,8 @@
         numThousandSep: "@",
         numPrepend: "@",
         numAppend: "@",
-        numFixed: "@"
+        numFixed: "@",
+        numBlank: "@"
       },
       link: function(scope, element, attrs, ngModelController) {
         if(!element[0] || element[0].tagName !== 'INPUT' || (element[0].type !== 'text' && element[0].type !== 'tel')) {
@@ -647,6 +658,13 @@
           initObject = initAllProperties(createPropertyObject(scope, 'numFixed', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
           onPropertyWatch(ngModelController, initObject);
         });
+        scope.$watch('numBlank', function(newProperty, oldProperty ){
+            if(oldProperty === newProperty) {
+              return;
+            }
+            initObject = initAllProperties(createPropertyObject(scope, 'numBlank', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+            onPropertyWatch(ngModelController, initObject);
+          });
         var state = {
           enable: true,
           count: 0
@@ -673,7 +691,8 @@
             initObject.isThousandSeparator,
             initObject.thousandSeparator,
             initObject.prepend,
-            initObject.append
+            initObject.append,
+            initObject.blank
           );
         });
       }
@@ -683,6 +702,7 @@
   var moduleName = 'dynamicNumber';
 
   angular.module(moduleName,[])
+    .constant('DEFAULT_BLANK', '0') 
     .provider('dynamicNumberStrategy', function() {
       var strategies = {};
       this.addStrategy = function(name, strategy){
@@ -699,8 +719,8 @@
         };
       };
     })
-    .filter('awnum', ['dynamicNumberStrategy', function(dynamicNumberStrategy) {
-      return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep, numPrepend, numAppend) {
+    .filter('awnum', ['dynamicNumberStrategy', 'DEFAULT_BLANK', function(dynamicNumberStrategy, DEFAULT_BLANK) {
+      return function(value, numFract, numSep, numRound, numFixed, numThousand, numThousandSep, numPrepend, numAppend, numBlank) {
         var strategy = {};
         var fractionPart;
         if(angular.isString(numFract)) {
@@ -715,9 +735,10 @@
         var thousandSeparator = initThousandSeparator(numThousandSep !== undefined ? numThousandSep : strategy.numThousandSep, fractionSeparator, fractionSeparator==='.'?',':'.');
         var prepend = initNumAppendPrepend(numPrepend !== undefined ? numPrepend : strategy.numPrepend);
         var append = initNumAppendPrepend(numAppend !== undefined ? numAppend : strategy.numAppend);
-        var filteredValue = filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator, prepend, append);
-        if(filteredValue === '') {
-          return '0';
+        var blank = initNumBlank(numBlank !== undefined ? numBlank : strategy.numBlank);
+        var filteredValue = filterModelValue(value, fractionPart, fractionSeparator, roundFunction, isFixed, isThousandSeparator, thousandSeparator, prepend, append, blank);
+        if(filteredValue === undefined || filteredValue === null || filteredValue === '') {
+          return DEFAULT_BLANK;
         }
         return filteredValue;
       };
