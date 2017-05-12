@@ -79,13 +79,13 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should have view value 0 and model value 0 when set 111.11', function () {
         $scope.testForm.testInput.$setViewValue('111.11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
       it('should have view value 0 and model value 0 when set 11.111', function () {
         $scope.testForm.testInput.$setViewValue('111.11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
       it('should have view value 0.11 and model value 0.11 when set 0.11', function () {
         $scope.testForm.testInput.$setViewValue('0.11');
@@ -104,13 +104,13 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should have view value 0 and model value 0 when set -111.11', function () {
         $scope.testForm.testInput.$setViewValue('-111.11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
       it('should have view value 0 and model value 0 when set -11.111', function () {
         $scope.testForm.testInput.$setViewValue('-111.11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
       it('should have view value -0.11 and model value -0.11 when set -0.11', function () {
         $scope.testForm.testInput.$setViewValue('-0.11');
@@ -124,8 +124,8 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should have view value 0 and model value 0 when set 11,11', function () {
         $scope.testForm.testInput.$setViewValue('11,11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
     });
     describe('number format: 2 integeres, decimals comma separator, positive and negative', function() {
@@ -155,8 +155,8 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should not have view value 0 and model value 0 when set 11.11', function () {
         $scope.testForm.testInput.$setViewValue('11.11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
     });
     describe('number format: 2 integeres, decimals comma separator, positive and negative, dot thousand separator', function() {
@@ -198,8 +198,8 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should have view value 0 and model value 0 when set 11,11', function () {
         $scope.testForm.testInput.$setViewValue('11,11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
       it('should have view value -11,11 and model value -11.11 when set -11,11', function () {
         $scope.testForm.testInput.$setViewValue('-11,11');
@@ -213,8 +213,8 @@ describe('Angular-dynamic-number basic', function() {
       });
       it('should not have view value 11.11 and model value 11.11 when set 11.11', function () {
         $scope.testForm.testInput.$setViewValue('11.11');
-        expect($scope.testInput).toEqual(0);
-        expect($scope.testForm.testInput.$viewValue).toEqual('0');
+        expect($scope.testInput).toEqual(null);
+        expect($scope.testForm.testInput.$viewValue).toEqual('');
       });
     });
     describe('number format: 6 integeres, decimals dot separator, positive and negative, space thousand separator', function() {
