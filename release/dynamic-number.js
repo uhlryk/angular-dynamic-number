@@ -325,7 +325,11 @@
   }
 
   function prepareResponse(value) {
-    return Number(value);
+    if (value === null) {
+      return null;
+    } else {
+      return Number(value);
+    }
   }
 
   function createPropertyObject(scope, key, value) {
@@ -429,8 +433,8 @@
     parsedValue = removePrependAppendChars(parsedValue, prepend, append);
     parsedValue = removeDoubledDecimalSeparators(parsedValue, parameters);
     if(new RegExp('^[\.,'+thousandSeparator+']{2,}').test(parsedValue)) {
-      changeViewValue(ngModelController, 0, parameters, state);
-      return 0;
+      changeViewValue(ngModelController, '', parameters, state);
+      return null;
     }
     var cursorPosition = getCaretPosition(element[0]);
     if(prepend) {
@@ -444,20 +448,21 @@
     parsedValue = removeLeadingZero(parsedValue);
     if(parsedValue === "0" + fractionSeparator && beforeRemovingLeadingZero === fractionSeparator && isPositiveNumber) {
       if(fractionPart) {
-        changeViewValue(ngModelController, '0' + fractionSeparator, parameters, state, true);
+        changeViewValue(ngModelController, '' + fractionSeparator, parameters, state, true);
         setCaretPosition(element[0], 2);
-        return 0;
+        return null;
       } else {
         changeViewValue(ngModelController, '', parameters, state);
-        return 0;
+        return null;
       }
     }
     if(parsedValue === '' && String(value).charAt(0)=== '0'){
-      changeViewValue(ngModelController, 0, parameters);
-      return 0;
+      changeViewValue(ngModelController, '', parameters);
+      return null;
     }
     if(parsedValue === undefined || parsedValue === ''){
-      return 0;
+      changeViewValue(ngModelController, '', parameters);
+      return null;
     }
     if(parsedValue === '-'){
       if(isPositiveNumber && !isNegativeNumber) {
@@ -465,7 +470,7 @@
       } else {
         changeViewValue(ngModelController, '-', parameters, state);
       }
-      return 0;
+      return null;
     }
 
     parsedValue = cutSurplusFractionPart(parsedValue, parameters);
