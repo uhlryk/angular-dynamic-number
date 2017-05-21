@@ -18,7 +18,7 @@
 
   function convModelToView(modelValue, viewSeparator, prepend, append){
     if(modelValue === undefined || modelValue === null || modelValue === "") {
-      return 0;
+      return '';
     }
     var newViewValue = '';
     if(viewSeparator === ',') {
