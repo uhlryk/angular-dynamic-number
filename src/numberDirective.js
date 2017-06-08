@@ -336,6 +336,7 @@
   function createPropertyObject(scope, key, value) {
     var properties = {
       awnum: scope.awnum,
+      numFixed: scope.numFixed,
       numInt: scope.numInt,
       numFract: scope.numFract,
       numSep: scope.numSep,
@@ -364,6 +365,7 @@
       strategy = dynamicNumberStrategy.getStrategy(properties.awnum);
     }
     var integerPart = initIntegerPart(properties.numInt !== undefined ? properties.numInt : strategy.numInt, 6);
+    var isFixed = initIsFixed(properties.numFixed !== undefined ? properties.numFixed : strategy.numFixed, false);
     var fractionPart = initFractionPart(properties.numFract !== undefined ? properties.numFract : strategy.numFract, 2);
     var fractionSeparator = initSeparator(properties.numSep !== undefined ?  properties.numSep : strategy.numSep, '.');
     var isPositiveNumber = initIsPositive(properties.numPos !== undefined ?  properties.numPos : strategy.numPos, true);
@@ -383,6 +385,7 @@
       attrs: attrs,
       ngModelController: ngModelController,
       viewRegexTest: viewRegexTest,
+      isFixed: isFixed,
       integerPart: integerPart,
       fractionPart: fractionPart,
       fractionSeparator: fractionSeparator,
@@ -542,6 +545,7 @@
       require: '?ngModel',
       scope: {
         awnum: "@",
+        numFixed: "@",
         numInt: "@",
         numFract: "@",
         numSep: "@",
@@ -573,6 +577,14 @@
 
         element.on('paste', function() {
           wasPasted = true;
+        });
+
+        scope.$watch('numFixed', function(newProperty, oldProperty ){
+          if(oldProperty === newProperty) {
+            return;
+          }
+          initObject = initAllProperties(createPropertyObject(scope, 'numFixed', newProperty), element, attrs, ngModelController, dynamicNumberStrategy);
+          onPropertyWatch(ngModelController, initObject);
         });
 
         scope.$watch('numInt', function(newProperty, oldProperty ){
