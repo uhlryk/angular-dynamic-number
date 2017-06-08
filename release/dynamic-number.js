@@ -18,7 +18,7 @@
 
   function convModelToView(modelValue, viewSeparator, prepend, append){
     if(modelValue === undefined || modelValue === null || modelValue === "") {
-      return 0;
+      return "";
     }
     var newViewValue = '';
     if(viewSeparator === ',') {
@@ -165,7 +165,8 @@
   }
   function removeLeadingZero(value){
     return String(value)
-      .replace(/^0+/g, "")//change 00000 to ''
+      .replace(/^(-?)(0+)$/g, "$10")//change 00000 to '0' and -00000 to '-0'
+      .replace(/^0(\d+)/g, "$1")//change 000001 to '1'
       .replace(/^-0(\d+)/g, "-$1")//change -013212 to -0
       .replace(new RegExp('^-([\\.,\\s])', 'g'), "-0$1")//change -. to -0.
       .replace(new RegExp('^[\\.,\\s]','g'), "0$&");//change . to 0.
