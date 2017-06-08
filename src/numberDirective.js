@@ -164,6 +164,9 @@
     return new RegExp('^'+negativeRegex+intRegex+fractRegex+'?$');
   }
   function removeLeadingZero(value){
+    if (String(value) === '0') {
+      return value;
+    }
     return String(value)
       .replace(/^(-?)(0+)$/g, "$10")//change 00000 to '0' and -00000 to '-0'
       .replace(/^0(\d+)/g, "$1")//change 000001 to '1'
