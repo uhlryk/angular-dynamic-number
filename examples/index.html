@@ -20,6 +20,22 @@
             numThousand: true,
             numThousandSep: ' '
           });
+        }])
+        .run(['dynamicNumberStrategy', function(dynamicNumberStrategy){
+          console.log(dynamicNumberStrategy);
+          console.log(dynamicNumberStrategy.getStrategies());
+          dynamicNumberStrategy.addStrategy('price1', {
+            numInt: 6,
+            numFract: 4,
+            numSep: '.',
+            numPos: true,
+            numNeg: false,
+            numRound: 'round',
+            numThousand: true,
+            numThousandSep: ' '
+          });
+          console.log(dynamicNumberStrategy.getStrategies());
+          console.log(dynamicNumberStrategy.getStrategy('price1'));
         }]);
     </script>
   </head>
