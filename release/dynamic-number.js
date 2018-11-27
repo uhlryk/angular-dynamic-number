@@ -315,7 +315,7 @@
    * http://stackoverflow.com/a/22574572/4138339
    */
   function setCaretPosition(elem, caretPos) {
-    if (elem !== null) {
+    if (elem !== null && angular.element(elem)[0] == document.activeElement) {
       if (elem.createTextRange) {
         var range = elem.createTextRange();
         range.move('character', caretPos);
