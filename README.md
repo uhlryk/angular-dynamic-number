@@ -222,12 +222,12 @@ Allow to set single character prepend currency e.g. $1234.12. Html could have pr
 
 **numAppend**
 
-Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
+If true, allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
 € = `&#x20AC;`
 
 **numString**
 
-Allow to set model type to string. This is useful when Javascript rounding in numbers is not desired.
+If true, allow to set model type to string. This is useful when Javascript rounding in numbers is not desired.
 
 ## Filter with strategies
 
