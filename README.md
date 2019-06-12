@@ -129,6 +129,10 @@ Allow to set single character prepend currency e.g. $1234.12. Html could have pr
 Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
 € = `&#x20AC;`
 
+**num-string**
+
+Allow to set model type to string. This is useful when Javascript rounding in numbers is not desired.
+
 ## Dynamic properties
 
 Some of properties of directive can be a models. And change in models change properties in directive. For example you can change currency, decimal separator etc.
@@ -220,6 +224,10 @@ Allow to set single character prepend currency e.g. $1234.12. Html could have pr
 
 Allow to set single character append currency e.g. 1234.12€. Html could have problem with show some characters. In those situations you should set currency as html entit.
 € = `&#x20AC;`
+
+**numString**
+
+Allow to set model type to string. This is useful when Javascript rounding in numbers is not desired.
 
 ## Filter with strategies
 
