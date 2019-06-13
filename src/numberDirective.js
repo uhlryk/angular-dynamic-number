@@ -288,7 +288,8 @@
             powerOfTen).toFixed(fractionPart), fractionSeparator, prepend,
           append);
       } else if (useString === true) {
-        value = roundStringNumber(value, fractionPart, fractionSeparator, append, roundFunction);
+        value = convModelToView(roundStringNumber(value, fractionPart,
+          fractionSeparator, append, roundFunction), fractionSeparator, prepend, append);
       } else {
         value = convModelToView(String(roundFunction(value * powerOfTen) /
           powerOfTen), fractionSeparator, prepend, append);
