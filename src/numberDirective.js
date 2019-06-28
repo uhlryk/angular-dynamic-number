@@ -314,7 +314,11 @@
 
     if (fractionPart == null) {
       return value;
-    }
+	}
+	
+	if (typeof value != 'string') {
+		value = "" + value;
+	}
 
     var indexFractionPart = value.indexOf(fractionSeparator);
 
